@@ -3,319 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
     <title>cs.rin.ru Info Text Combiner</title>
-    <style>
-        :root {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-color: #3b82f6;
-            --accent-darker: #2563eb;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --border-color: #475569;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --dropzone-gradient: linear-gradient(145deg, #1e293b, #0f172a);
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            padding: 2rem;
-            margin: 0;
-            min-height: 100vh;
-            line-height: 1.5;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-        }
-        .header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #60a5fa, #3b82f6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        .language-selector {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--bg-secondary);
-            padding: 0.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            cursor: pointer;
-        }
-        .language-selector:hover {
-            border-color: var(--accent-color);
-        }
-        .color-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 8px;
-        }
-        .color-controls div {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .color-controls input[type="color"] {
-            border: none;
-            border-radius: 4px;
-            width: 50px;
-            height: 30px;
-            padding: 0;
-            cursor: pointer;
-        }
-        .date-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            background: var(--bg-secondary);
-            padding: 1rem;
-            border-radius: 8px;
-        }
-        .date-group {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        .date-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--bg-tertiary);
-            transition: .4s;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-        }
-        input:checked+.slider {
-            background-color: var(--accent-color);
-        }
-        input:checked+.slider:before {
-            transform: translateX(26px);
-        }
-        .slider.round {
-            border-radius: 34px;
-        }
-        .slider.round:before {
-            border-radius: 50%;
-        }
-        .date-input {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.5rem;
-            border-radius: 4px;
-            font-size: 1rem;
-            width: 300px;
-        }
-        .date-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-        #dropzone {
-            border: 2px dashed var(--border-color);
-            border-radius: 16px;
-            padding: 3rem 2rem;
-            text-align: center;
-            background: var(--dropzone-gradient);
-            margin-bottom: 2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #dropzone:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-        #dropzone.dragover {
-            border-color: var(--accent-color);
-            background: linear-gradient(145deg, #2563eb22, #1e293b);
-            transform: scale(1.02);
-        }
-        .dropzone-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-        }
-        .button-container {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        button {
-            flex: 1;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-        button:hover {
-            background: var(--accent-darker);
-            transform: translateY(-2px);
-        }
-        button.danger {
-            background: var(--danger-color);
-        }
-        button.danger:hover {
-            background: #dc2626;
-        }
-        button.success {
-            background: var(--success-color);
-        }
-        button.success:hover {
-            background: #059669;
-        }
-        .file-list {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-        }
-        .file-list-header {
-            background: var(--bg-tertiary);
-            padding: 1rem 1.5rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-secondary);
-        }
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.2s ease;
-        }
-        .platform-tag {
-            background: var(--accent-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .platform-tag.windows {
-            background: var(--accent-color);
-        }
-        .platform-tag.mac {
-            background: #8b5cf6;
-        }
-        .platform-tag.linux {
-            background: #10b981;
-        }
-        .platform-tag.linux64 {
-            background: #10b981;
-        }
-        .platform-tag.win64 {
-            background: var(--accent-color);
-        }
-        #output {
-            background: var(--bg-secondary);
-            padding: 1.5rem;
-            border-radius: 12px;
-            white-space: pre-wrap;
-            min-height: 200px;
-            font-family: monospace;
-            line-height: 1.6;
-            box-shadow: var(--card-shadow);
-        }
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--success-color);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 500;
-            box-shadow: var(--card-shadow);
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        @media (max-width: 640px) {
-            body {
-                padding: 1rem;
-            }
-            .button-container {
-                flex-direction: column;
-            }
-            button {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -346,39 +35,84 @@
         </div>
         <div class="date-controls">
             <div class="date-group">
-                <div class="date-toggle">
-                    <label class="switch">
-                        <input type="checkbox" id="windowsDateToggle">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Windows Date</span>
+                <div class="date-controls-left">
+                    <div class="date-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="windowsDateToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Windows Date</span>
+                    </div>
+                    <div class="date-input-container" id="windowsDateContainer" style="display: none;">
+                        <input type="text" id="windowsDateInput" class="date-input"
+                            placeholder="Paste Windows date here">
+                    </div>
                 </div>
-                <div class="date-input-container" id="windowsDateContainer" style="display: none;">
-                    <input type="text" id="windowsDateInput" class="date-input" placeholder="Paste Windows date here">
+                <div class="link-controls-right">
+                    <div class="date-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="windowsLinkToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Windows Link</span>
+                    </div>
+                    <div class="date-input-container" id="windowsLinkContainer" style="display: none;">
+                        <input type="text" id="windowsLinkInput" class="date-input"
+                            placeholder="Enter Windows version link">
+                    </div>
                 </div>
             </div>
             <div class="date-group">
-                <div class="date-toggle">
-                    <label class="switch">
-                        <input type="checkbox" id="macDateToggle">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Mac Date</span>
+                <div class="date-controls-left">
+                    <div class="date-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="macDateToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Mac Date</span>
+                    </div>
+                    <div class="date-input-container" id="macDateContainer" style="display: none;">
+                        <input type="text" id="macDateInput" class="date-input" placeholder="Paste Mac date here">
+                    </div>
                 </div>
-                <div class="date-input-container" id="macDateContainer" style="display: none;">
-                    <input type="text" id="macDateInput" class="date-input" placeholder="Paste Mac date here">
+                <div class="link-controls-right">
+                    <div class="date-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="macLinkToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Mac Link</span>
+                    </div>
+                    <div class="date-input-container" id="macLinkContainer" style="display: none;">
+                        <input type="text" id="macLinkInput" class="date-input" placeholder="Enter Mac version link">
+                    </div>
                 </div>
             </div>
             <div class="date-group">
-                <div class="date-toggle">
-                    <label class="switch">
-                        <input type="checkbox" id="linuxDateToggle">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Linux Date</span>
+                <div class="date-controls-left">
+                    <div class="date-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="linuxDateToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Linux Date</span>
+                    </div>
+                    <div class="date-input-container" id="linuxDateContainer" style="display: none;">
+                        <input type="text" id="linuxDateInput" class="date-input" placeholder="Paste Linux date here">
+                    </div>
                 </div>
-                <div class="date-input-container" id="linuxDateContainer" style="display: none;">
-                    <input type="text" id="linuxDateInput" class="date-input" placeholder="Paste Linux date here">
+                <div class="link-controls-right">
+                    <div class="date-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="linuxLinkToggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Linux Link</span>
+                    </div>
+                    <div class="date-input-container" id="linuxLinkContainer" style="display: none;">
+                        <input type="text" id="linuxLinkInput" class="date-input"
+                            placeholder="Enter Linux version link">
+                    </div>
                 </div>
             </div>
         </div>
@@ -409,7 +143,6 @@
         <div id="output"></div>
     </div>
     <script>
-        // Initialize and load saved preferences
         const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
         const savedColors = JSON.parse(localStorage.getItem('colorPreferences')) || {
             windows: '#3b82f6',
@@ -421,33 +154,32 @@
         let windowsColor = savedColors.windows;
         let macColor = savedColors.mac;
         let linuxColor = savedColors.linux;
-        // Date settings
         let windowsDateUpdate = false;
         let macDateUpdate = false;
         let linuxDateUpdate = false;
         let windowsCustomDate = '';
         let macCustomDate = '';
         let linuxCustomDate = '';
-        // Set initial values for inputs
+        let windowsLinkUpdate = false;
+        let macLinkUpdate = false;
+        let linuxLinkUpdate = false;
+        let windowsCustomLink = '';
+        let macCustomLink = '';
+        let linuxCustomLink = '';
         document.getElementById('languageSelect').value = currentLanguage;
         document.getElementById('windowsColorPicker').value = windowsColor;
         document.getElementById('macColorPicker').value = macColor;
         document.getElementById('linuxColorPicker').value = linuxColor;
-        // DOM Elements
         const dropzone = document.getElementById('dropzone');
         const output = document.getElementById('output');
         const fileList = document.getElementById('fileList');
-        // Function to detect branch
         function extractBranch(content) {
             const branchMatch = content.match(/\[Branch:\s*([^\]]+)\]/);
             return branchMatch && branchMatch[1] !== 'Public' ? ` [${branchMatch[1]}]` : '';
         }
-        // Format date string to desired format
         function formatDate(dateStr) {
             try {
-                // Handle various hyphen types (en dash, em dash, regular hyphen)
                 const normalizedStr = dateStr.replace(/[–—-]/g, '-');
-                // Try to parse the normalized date string
                 const dateParts = normalizedStr.match(
                     /(\d{1,2})\s+(\w+)\s+(\d{4})\s*-\s*(\d{2}):(\d{2}):(\d{2})\s*UTC/i);
                 if (dateParts) {
@@ -461,22 +193,20 @@
                     const hours = dateParts[4];
                     const minutes = dateParts[5];
                     const seconds = dateParts[6];
-                    // Convert month to proper capitalization
                     month = month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
                     if (months.includes(month)) {
                         return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
                     }
                 }
-                return dateStr; // Return original string if parsing fails
+                return dateStr;
             } catch (e) {
-                return dateStr; // Return original string if any error occurs
+                return dateStr;
             }
         }
-        // File Input Handling
         function handleFiles(newFiles) {
             for (let file of newFiles) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     files.push({
                         name: file.name,
                         content: e.target.result
@@ -486,32 +216,29 @@
                 reader.readAsText(file);
             }
         }
-        // Click to Upload
-        dropzone.onclick = function() {
+        dropzone.onclick = function () {
             const input = document.createElement('input');
             input.type = 'file';
             input.multiple = true;
             input.accept = '.txt';
-            input.onchange = function() {
+            input.onchange = function () {
                 handleFiles(this.files);
             };
             input.click();
         };
-        // Drag and Drop
-        dropzone.ondragover = function(e) {
+        dropzone.ondragover = function (e) {
             e.preventDefault();
             this.classList.add('dragover');
         };
-        dropzone.ondragleave = function(e) {
+        dropzone.ondragleave = function (e) {
             e.preventDefault();
             this.classList.remove('dragover');
         };
-        dropzone.ondrop = function(e) {
+        dropzone.ondrop = function (e) {
             e.preventDefault();
             this.classList.remove('dragover');
             handleFiles(e.dataTransfer.files);
         };
-        // Update Display
         function updateDisplay() {
             const grouped = {
                 Windows: [],
@@ -521,10 +248,8 @@
             for (const file of files) {
                 let processedContent = file.content;
                 if (file.name.includes('Linux') && linuxDateUpdate && linuxCustomDate) {
-                    // Extract build number if it exists
                     const buildMatch = processedContent.match(/\[Build\s+(\d+)\]/);
                     const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
-                    // Remove any existing Build number first
                     processedContent = processedContent.replace(/\s*\[Build\s+\d+\]/g, '');
                     processedContent = processedContent.replace(
                         /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
@@ -571,15 +296,21 @@
                 }
             }
             const output_text = [
-                ...grouped.Windows.map(f =>
-                    `[quote][size=150][color=${windowsColor}]Windows${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
-                ),
-                ...grouped.Mac.map(f =>
-                    `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
-                ),
-                ...grouped.Linux.map(f =>
-                    `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
-                )
+                ...grouped.Windows.map(f => {
+                    const versionLink = windowsLinkUpdate && windowsCustomLink ?
+                        ` [url=${windowsCustomLink}]Version Link[/url]` : '';
+                    return `[quote][size=150][color=${windowsColor}]Windows${extractBranch(f.content)}${versionLink}[/color][/size]\n${f.content}[/quote]`;
+                }),
+                ...grouped.Mac.map(f => {
+                    const versionLink = macLinkUpdate && macCustomLink ?
+                        ` [url=${macCustomLink}]Version Link[/url]` : '';
+                    return `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}${versionLink}[/color][/size]\n${f.content}[/quote]`;
+                }),
+                ...grouped.Linux.map(f => {
+                    const versionLink = linuxLinkUpdate && linuxCustomLink ?
+                        ` [url=${linuxCustomLink}]Version Link[/url]` : '';
+                    return `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}${versionLink}[/color][/size]\n${f.content}[/quote]`;
+                })
             ].join('\n\n');
             output.textContent = output_text;
             const fileListHTML = `
@@ -604,7 +335,6 @@
                 </div>
             `;
         }
-        // Platform Detection
         function detectPlatform(filename) {
             if (filename.includes('Linux64')) return 'Linux64';
             if (filename.includes('Linux')) return 'Linux';
@@ -612,7 +342,6 @@
             if (filename.includes('Win64')) return 'Win64';
             return 'Windows';
         }
-        // Show Toast Message
         function showToast(message) {
             const toast = document.createElement('div');
             toast.className = 'toast';
@@ -620,7 +349,6 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
-        // Generate Combined Filename
         function generateCombinedFileName() {
             if (files.length === 0) return 'combined.txt';
             let baseName = files[0].name;
@@ -645,7 +373,6 @@
             }
             return baseName + '.txt';
         }
-        // Button Actions
         function copyOutput() {
             const textToCopy = output.textContent;
             if (!textToCopy) {
@@ -655,7 +382,6 @@
             navigator.clipboard.writeText(textToCopy).then(() => {
                 showToast('Copied to clipboard!');
             }).catch(() => {
-                // Fallback method using textarea
                 const textarea = document.createElement('textarea');
                 textarea.value = textToCopy;
                 textarea.style.position = 'fixed';
@@ -693,7 +419,6 @@
         }
         function clearAll() {
             files.length = 0;
-            // Reset date related fields
             document.getElementById('windowsDateToggle').checked = false;
             document.getElementById('macDateToggle').checked = false;
             document.getElementById('linuxDateToggle').checked = false;
@@ -709,6 +434,21 @@
             windowsCustomDate = '';
             macCustomDate = '';
             linuxCustomDate = '';
+            document.getElementById('windowsLinkToggle').checked = false;
+            document.getElementById('macLinkToggle').checked = false;
+            document.getElementById('linuxLinkToggle').checked = false;
+            document.getElementById('windowsLinkInput').value = '';
+            document.getElementById('macLinkInput').value = '';
+            document.getElementById('linuxLinkInput').value = '';
+            document.getElementById('windowsLinkContainer').style.display = 'none';
+            document.getElementById('macLinkContainer').style.display = 'none';
+            document.getElementById('linuxLinkContainer').style.display = 'none';
+            windowsLinkUpdate = false;
+            macLinkUpdate = false;
+            linuxLinkUpdate = false;
+            windowsCustomLink = '';
+            macCustomLink = '';
+            linuxCustomLink = '';
             updateDisplay();
         }
         function changeLanguage() {
@@ -727,8 +467,7 @@
             document.querySelector('label[for="linuxColorPicker"]').textContent = t.linuxColor;
             updateDisplay();
         }
-        // Date Control Event Listeners
-        document.getElementById('windowsDateToggle').addEventListener('change', function(e) {
+        document.getElementById('windowsDateToggle').addEventListener('change', function (e) {
             windowsDateUpdate = e.target.checked;
             document.getElementById('windowsDateContainer').style.display = windowsDateUpdate ? 'block' :
                 'none';
@@ -737,7 +476,7 @@
             }
             updateDisplay();
         });
-        document.getElementById('macDateToggle').addEventListener('change', function(e) {
+        document.getElementById('macDateToggle').addEventListener('change', function (e) {
             macDateUpdate = e.target.checked;
             document.getElementById('macDateContainer').style.display = macDateUpdate ? 'block' : 'none';
             if (macDateUpdate) {
@@ -745,7 +484,7 @@
             }
             updateDisplay();
         });
-        document.getElementById('linuxDateToggle').addEventListener('change', function(e) {
+        document.getElementById('linuxDateToggle').addEventListener('change', function (e) {
             linuxDateUpdate = e.target.checked;
             document.getElementById('linuxDateContainer').style.display = linuxDateUpdate ? 'block' : 'none';
             if (linuxDateUpdate) {
@@ -753,7 +492,7 @@
             }
             updateDisplay();
         });
-        document.getElementById('windowsDateInput').addEventListener('input', function(e) {
+        document.getElementById('windowsDateInput').addEventListener('input', function (e) {
             const formattedDate = formatDate(e.target.value);
             windowsCustomDate = formattedDate;
             if (formattedDate !== e.target.value) {
@@ -761,7 +500,7 @@
             }
             updateDisplay();
         });
-        document.getElementById('macDateInput').addEventListener('input', function(e) {
+        document.getElementById('macDateInput').addEventListener('input', function (e) {
             const formattedDate = formatDate(e.target.value);
             macCustomDate = formattedDate;
             if (formattedDate !== e.target.value) {
@@ -769,7 +508,7 @@
             }
             updateDisplay();
         });
-        document.getElementById('linuxDateInput').addEventListener('input', function(e) {
+        document.getElementById('linuxDateInput').addEventListener('input', function (e) {
             const formattedDate = formatDate(e.target.value);
             linuxCustomDate = formattedDate;
             if (formattedDate !== e.target.value) {
@@ -777,8 +516,7 @@
             }
             updateDisplay();
         });
-        // Color picker event listeners
-        document.getElementById('windowsColorPicker').addEventListener('input', function(e) {
+        document.getElementById('windowsColorPicker').addEventListener('input', function (e) {
             windowsColor = e.target.value;
             localStorage.setItem('colorPreferences', JSON.stringify({
                 windows: windowsColor,
@@ -787,7 +525,7 @@
             }));
             updateDisplay();
         });
-        document.getElementById('macColorPicker').addEventListener('input', function(e) {
+        document.getElementById('macColorPicker').addEventListener('input', function (e) {
             macColor = e.target.value;
             localStorage.setItem('colorPreferences', JSON.stringify({
                 windows: windowsColor,
@@ -796,7 +534,7 @@
             }));
             updateDisplay();
         });
-        document.getElementById('linuxColorPicker').addEventListener('input', function(e) {
+        document.getElementById('linuxColorPicker').addEventListener('input', function (e) {
             linuxColor = e.target.value;
             localStorage.setItem('colorPreferences', JSON.stringify({
                 windows: windowsColor,
@@ -805,12 +543,47 @@
             }));
             updateDisplay();
         });
-        // Button event listeners
+        document.getElementById('windowsLinkToggle').addEventListener('change', function (e) {
+            windowsLinkUpdate = e.target.checked;
+            document.getElementById('windowsLinkContainer').style.display = windowsLinkUpdate ? 'block' :
+                'none';
+            if (windowsLinkUpdate) {
+                document.getElementById('windowsLinkInput').focus();
+            }
+            updateDisplay();
+        });
+        document.getElementById('macLinkToggle').addEventListener('change', function (e) {
+            macLinkUpdate = e.target.checked;
+            document.getElementById('macLinkContainer').style.display = macLinkUpdate ? 'block' : 'none';
+            if (macLinkUpdate) {
+                document.getElementById('macLinkInput').focus();
+            }
+            updateDisplay();
+        });
+        document.getElementById('linuxLinkToggle').addEventListener('change', function (e) {
+            linuxLinkUpdate = e.target.checked;
+            document.getElementById('linuxLinkContainer').style.display = linuxLinkUpdate ? 'block' : 'none';
+            if (linuxLinkUpdate) {
+                document.getElementById('linuxLinkInput').focus();
+            }
+            updateDisplay();
+        });
+        document.getElementById('windowsLinkInput').addEventListener('input', function (e) {
+            windowsCustomLink = e.target.value;
+            updateDisplay();
+        });
+        document.getElementById('macLinkInput').addEventListener('input', function (e) {
+            macCustomLink = e.target.value;
+            updateDisplay();
+        });
+        document.getElementById('linuxLinkInput').addEventListener('input', function (e) {
+            linuxCustomLink = e.target.value;
+            updateDisplay();
+        });
         document.getElementById('copyButton').addEventListener('click', copyOutput);
         document.getElementById('downloadButton').addEventListener('click', downloadOutput);
         document.getElementById('clearButton').addEventListener('click', clearAll);
         document.getElementById('languageSelect').addEventListener('change', changeLanguage);
-        // Translations
         const translations = {
             en: {
                 title: "cs.rin.ru Info Text Combiner",
@@ -871,24 +644,8 @@
                 windowsColor: "Color de Windows:",
                 macColor: "Color de Mac:",
                 linuxColor: "Color de Linux:"
-            },
-            pi: {
-                title: "cs.rin.ru Info Text Combiner",
-                subtitle: "Merge yer platform scrolls, ye scurvy dog!",
-                dropText: "Drop ye scrolls here, matey!",
-                dropSubtext: "or click to raid yer files",
-                copyButton: "Copy the Booty",
-                clearButton: "Swab the Deck",
-                downloadButton: "Download the Loot",
-                filename: "Scroll Name",
-                platform: "Ship",
-                copied: "Treasure copied to ye clipboard!",
-                windowsColor: "Windows Ship Paint:",
-                macColor: "Mac Ship Paint:",
-                linuxColor: "Linux Ship Paint:"
             }
         };
-        // Initial language setup
         changeLanguage();
     </script>
 </body>
