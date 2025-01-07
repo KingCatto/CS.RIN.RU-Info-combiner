@@ -19,13 +19,11 @@
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --dropzone-gradient: linear-gradient(145deg, #1e293b, #0f172a);
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-primary);
@@ -35,32 +33,28 @@
             min-height: 100vh;
             line-height: 1.5;
         }
-
         .container {
             max-width: 900px;
             margin: 0 auto;
             position: relative;
         }
-
         .header {
             margin-bottom: 2rem;
             text-align: center;
         }
-
         h1 {
             font-size: 2.5rem;
             font-weight: 700;
             background: linear-gradient(135deg, #60a5fa, #3b82f6);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0.5rem;
         }
-
         .subtitle {
             color: var(--text-secondary);
             font-size: 1.1rem;
         }
-
         .language-selector {
             position: absolute;
             top: 1rem;
@@ -72,11 +66,9 @@
             color: var(--text-primary);
             cursor: pointer;
         }
-
         .language-selector:hover {
             border-color: var(--accent-color);
         }
-
         .color-controls {
             display: flex;
             gap: 1rem;
@@ -85,13 +77,11 @@
             padding: 1rem;
             border-radius: 8px;
         }
-        
         .color-controls div {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        
         .color-controls input[type="color"] {
             border: none;
             border-radius: 4px;
@@ -100,7 +90,77 @@
             padding: 0;
             cursor: pointer;
         }
-
+        /* New Date Controls Styles */
+        .date-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            align-items: center;
+        }
+        .date-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-tertiary);
+            transition: .4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+        input:checked+.slider {
+            background-color: var(--accent-color);
+        }
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .date-input {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .date-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
         #dropzone {
             border: 2px dashed var(--border-color);
             border-radius: 16px;
@@ -111,30 +171,25 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         #dropzone:hover {
             border-color: var(--accent-color);
             transform: translateY(-2px);
         }
-
         #dropzone.dragover {
             border-color: var(--accent-color);
             background: linear-gradient(145deg, #2563eb22, #1e293b);
             transform: scale(1.02);
         }
-
         .dropzone-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
             color: var(--accent-color);
         }
-
         .button-container {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
         }
-
         button {
             flex: 1;
             background: var(--accent-color);
@@ -151,28 +206,22 @@
             gap: 0.5rem;
             transition: all 0.3s ease;
         }
-
         button:hover {
             background: var(--accent-darker);
             transform: translateY(-2px);
         }
-
         button.danger {
             background: var(--danger-color);
         }
-
         button.danger:hover {
             background: #dc2626;
         }
-
         button.success {
             background: var(--success-color);
         }
-
         button.success:hover {
             background: #059669;
         }
-
         .file-list {
             background: var(--bg-secondary);
             border-radius: 12px;
@@ -180,7 +229,6 @@
             margin-bottom: 2rem;
             box-shadow: var(--card-shadow);
         }
-
         .file-list-header {
             background: var(--bg-tertiary);
             padding: 1rem 1.5rem;
@@ -189,7 +237,6 @@
             justify-content: space-between;
             color: var(--text-secondary);
         }
-
         .file-item {
             display: flex;
             justify-content: space-between;
@@ -198,7 +245,6 @@
             border-bottom: 1px solid var(--border-color);
             transition: background-color 0.2s ease;
         }
-
         .platform-tag {
             background: var(--accent-color);
             color: white;
@@ -207,13 +253,21 @@
             font-size: 0.875rem;
             font-weight: 500;
         }
-
-        .platform-tag.windows { background: var(--accent-color); }
-        .platform-tag.mac { background: #8b5cf6; }
-        .platform-tag.linux { background: #10b981; }
-        .platform-tag.linux64 { background: #10b981; }
-        .platform-tag.win64 { background: var(--accent-color); }
-
+        .platform-tag.windows {
+            background: var(--accent-color);
+        }
+        .platform-tag.mac {
+            background: #8b5cf6;
+        }
+        .platform-tag.linux {
+            background: #10b981;
+        }
+        .platform-tag.linux64 {
+            background: #10b981;
+        }
+        .platform-tag.win64 {
+            background: var(--accent-color);
+        }
         #output {
             background: var(--bg-secondary);
             padding: 1.5rem;
@@ -224,7 +278,6 @@
             line-height: 1.6;
             box-shadow: var(--card-shadow);
         }
-
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -237,16 +290,26 @@
             box-shadow: var(--card-shadow);
             animation: slideIn 0.3s ease-out;
         }
-
         @keyframes slideIn {
-            from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
-
         @media (max-width: 640px) {
-            body { padding: 1rem; }
-            .button-container { flex-direction: column; }
-            button { width: 100%; }
+            body {
+                padding: 1rem;
+            }
+            .button-container {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -257,14 +320,11 @@
             <option value="fr">Français</option>
             <option value="de">Deutsch</option>
             <option value="es">Español</option>
-            <option value="pi">Pirate</option>
         </select>
-
         <div class="header">
             <h1 id="title">cs.rin.ru Info Text Combiner</h1>
             <p class="subtitle" id="subtitle">Combine and format your platform-specific files</p>
         </div>
-
         <div class="color-controls">
             <div>
                 <label for="windowsColorPicker">Windows Color: </label>
@@ -279,7 +339,19 @@
                 <input type="color" id="linuxColorPicker" value="#10b981">
             </div>
         </div>
-
+        <!-- New Date Controls -->
+        <div class="date-controls">
+            <div class="date-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="dateToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Last public update</span>
+            </div>
+            <div class="date-input-container" id="dateInputContainer" style="display: none;">
+                <input type="text" id="dateInput" class="date-input" placeholder="Paste date here">
+            </div>
+        </div>
         <div id="dropzone">
             <div class="dropzone-content">
                 <div class="dropzone-icon">📁</div>
@@ -287,7 +359,6 @@
                 <p class="dropzone-subtext">or click to select files</p>
             </div>
         </div>
-
         <div class="button-container">
             <button id="copyButton">
                 <span>📋</span> Copy Output
@@ -299,48 +370,50 @@
                 <span>🗑️</span> Clear All
             </button>
         </div>
-
         <div id="fileList" class="file-list">
             <div class="file-list-header">
                 <span>Filename</span>
                 <span>Platform</span>
             </div>
         </div>
-
         <div id="output"></div>
     </div>
-
     <script>
-        // Initialize and load saved preferences
+        // Initialize and load saved preferences (excluding date settings)
         const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
         const savedColors = JSON.parse(localStorage.getItem('colorPreferences')) || {
             windows: '#3b82f6',
             mac: '#8b5cf6',
             linux: '#10b981'
         };
-
         const files = [];
         let currentLanguage = savedLanguage;
         let windowsColor = savedColors.windows;
         let macColor = savedColors.mac;
         let linuxColor = savedColors.linux;
-
+        // Date settings always start fresh
+        let useDateUpdate = false;
+        let customDate = '';
+        // Ensure date controls are reset on page load
+        window.addEventListener('load', () => {
+            document.getElementById('dateToggle').checked = false;
+            document.getElementById('dateInput').value = '';
+            document.getElementById('dateInputContainer').style.display = 'none';
+        });
         // Set initial values for inputs
         document.getElementById('languageSelect').value = currentLanguage;
         document.getElementById('windowsColorPicker').value = windowsColor;
         document.getElementById('macColorPicker').value = macColor;
         document.getElementById('linuxColorPicker').value = linuxColor;
-
         // DOM Elements
         const dropzone = document.getElementById('dropzone');
         const output = document.getElementById('output');
         const fileList = document.getElementById('fileList');
-
         // File Input Handling
         function handleFiles(newFiles) {
             for (let file of newFiles) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     files.push({
                         name: file.name,
                         content: e.target.result
@@ -350,36 +423,31 @@
                 reader.readAsText(file);
             }
         }
-
         // Click to Upload
-        dropzone.onclick = function() {
+        dropzone.onclick = function () {
             const input = document.createElement('input');
             input.type = 'file';
             input.multiple = true;
             input.accept = '.txt';
-            input.onchange = function() {
+            input.onchange = function () {
                 handleFiles(this.files);
             };
             input.click();
         };
-
         // Drag and Drop
-        dropzone.ondragover = function(e) {
+        dropzone.ondragover = function (e) {
             e.preventDefault();
             this.classList.add('dragover');
         };
-
-        dropzone.ondragleave = function(e) {
+        dropzone.ondragleave = function (e) {
             e.preventDefault();
             this.classList.remove('dragover');
         };
-
-        dropzone.ondrop = function(e) {
+        dropzone.ondrop = function (e) {
             e.preventDefault();
             this.classList.remove('dragover');
             handleFiles(e.dataTransfer.files);
         };
-
         // Update Display
         function updateDisplay() {
             const grouped = {
@@ -387,39 +455,68 @@
                 Mac: [],
                 Linux: []
             };
-
-            files.forEach(file => {
-                if (file.name.includes('Linux')) {
-                    grouped.Linux.push(file);
-                } else if (file.name.includes('Mac')) {
-                    grouped.Mac.push(file);
-                } else {
-                    grouped.Windows.push(file);
+            for (const file of files) {
+                let processedContent = file.content;
+                if (useDateUpdate && customDate) {
+                    // Extract build number if it exists
+                    const buildMatch = processedContent.match(/\[Build\s+(\d+)\]/);
+                    const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
+                    // Remove any existing Build number first
+                    processedContent = processedContent.replace(/\s*\[Build\s+\d+\]/g, '');
+                    // Update both Version and Uploaded version with date and build number
+                    processedContent = processedContent.replace(
+                        /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
+                        `$1[i]${customDate}${buildNumber}[/i]`);
+                    processedContent = processedContent.replace(
+                        /(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
+                        `$1[i]${customDate}${buildNumber}[/i]`);
                 }
-            });
-
+                if (file.name.includes('Linux')) {
+                    grouped.Linux.push({
+                        ...file,
+                        content: processedContent
+                    });
+                } else if (file.name.includes('Mac')) {
+                    grouped.Mac.push({
+                        ...file,
+                        content: processedContent
+                    });
+                } else {
+                    grouped.Windows.push({
+                        ...file,
+                        content: processedContent
+                    });
+                }
+            }
             const output_text = [
-                ...grouped.Windows.map(f => `[quote][size=150][color=${windowsColor}]Windows[/color][/size]\n${f.content}[/quote]`),
-                ...grouped.Mac.map(f => `[quote][size=150][color=${macColor}]Mac[/color][/size]\n${f.content}[/quote]`),
-                ...grouped.Linux.map(f => `[quote][size=150][color=${linuxColor}]Linux[/color][/size]\n${f.content}[/quote]`)
+                ...grouped.Windows.map(f =>
+                    `[quote][size=150][color=${windowsColor}]Windows${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
+                    ),
+                ...grouped.Mac.map(f =>
+                    `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
+                    ),
+                ...grouped.Linux.map(f =>
+                    `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
+                    )
             ].join('\n\n');
-
             output.textContent = output_text;
-
             const fileListHTML = `
-                <div class="file-list-header">
-                    <span>${translations[currentLanguage].filename}</span>
-                    <span>${translations[currentLanguage].platform}</span>
-                </div>
-                ${[
-                    ...grouped.Windows.map(createFileListItem),
-                    ...grouped.Mac.map(createFileListItem),
-                    ...grouped.Linux.map(createFileListItem)
-                ].join('')}
-            `;
+        <div class="file-list-header">
+            <span>${translations[currentLanguage].filename}</span>
+            <span>${translations[currentLanguage].platform}</span>
+        </div>
+        ${[
+            ...grouped.Windows.map(createFileListItem),
+            ...grouped.Mac.map(createFileListItem),
+            ...grouped.Linux.map(createFileListItem)
+        ].join('')}
+    `;
             fileList.innerHTML = fileListHTML;
         }
-
+        function extractBranch(content) {
+            const branchMatch = content.match(/\[Branch:\s*([^\]]+)\]/);
+            return branchMatch && branchMatch[1] !== 'Public' ? ` [${branchMatch[1]}]` : '';
+        }
         function createFileListItem(file) {
             const platform = detectPlatform(file.name);
             return `
@@ -429,7 +526,6 @@
                 </div>
             `;
         }
-
         // Platform Detection
         function detectPlatform(filename) {
             if (filename.includes('Linux64')) return 'Linux64';
@@ -438,7 +534,6 @@
             if (filename.includes('Win64')) return 'Win64';
             return 'Windows';
         }
-
         // Show Toast Message
         function showToast(message) {
             const toast = document.createElement('div');
@@ -447,34 +542,31 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
-
         // Generate Combined Filename
         function generateCombinedFileName() {
             if (files.length === 0) return 'combined.txt';
-
             let baseName = files[0].name;
             baseName = baseName.replace(/\.txt$/, '');
-
             const originalPlatformMatch = baseName.match(/(Win64|Linux64|Linux|Mac|Windows)/);
             if (originalPlatformMatch) {
                 const platforms = new Set(files.map(file => {
-                const platform = detectPlatform(file.name);
+                    const platform = detectPlatform(file.name);
                     return platform === 'Windows' ? 'Win64' : (platform === 'Linux' ? 'Linux64' : platform);
                 }));
-
                 const platformString = Array.from(platforms)
                     .sort((a, b) => {
-                        const order = { 'Win64': 1, 'Mac': 2, 'Linux64': 3 };
+                        const order = {
+                            'Win64': 1,
+                            'Mac': 2,
+                            'Linux64': 3
+                        };
                         return order[a] - order[b];
                     })
                     .join('.');
-
                 baseName = baseName.replace(originalPlatformMatch[0], platformString);
             }
-
             return baseName + '.txt';
         }
-
         // Button Actions
         function copyOutput() {
             const textToCopy = output.textContent;
@@ -482,34 +574,35 @@
                 showToast('No content to copy');
                 return;
             }
-
-            // Fallback method using textarea
-            const textarea = document.createElement('textarea');
-            textarea.value = textToCopy;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            
-            try {
-                document.execCommand('copy');
+            navigator.clipboard.writeText(textToCopy).then(() => {
                 showToast('Copied to clipboard!');
-            } catch (err) {
-                console.error('Failed to copy:', err);
-                showToast('Failed to copy to clipboard');
-            }
-            
-            document.body.removeChild(textarea);
+            }).catch(() => {
+                // Fallback method using textarea
+                const textarea = document.createElement('textarea');
+                textarea.value = textToCopy;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('Copied to clipboard!');
+                } catch (err) {
+                    console.error('Failed to copy:', err);
+                    showToast('Failed to copy to clipboard');
+                }
+                document.body.removeChild(textarea);
+            });
         }
-
         function downloadOutput() {
             if (!output.textContent) {
                 showToast('No content to download');
                 return;
             }
-
             const fileName = generateCombinedFileName();
-            const blob = new Blob([output.textContent], { type: 'text/plain' });
+            const blob = new Blob([output.textContent], {
+                type: 'text/plain'
+            });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -520,12 +613,16 @@
             document.body.removeChild(a);
             showToast('File downloaded!');
         }
-
         function clearAll() {
             files.length = 0;
+            // Reset date related fields
+            document.getElementById('dateToggle').checked = false;
+            document.getElementById('dateInput').value = '';
+            document.getElementById('dateInputContainer').style.display = 'none';
+            useDateUpdate = false;
+            customDate = '';
             updateDisplay();
         }
-
         function changeLanguage() {
             currentLanguage = document.getElementById('languageSelect').value;
             localStorage.setItem('preferredLanguage', currentLanguage);
@@ -542,7 +639,70 @@
             document.querySelector('label[for="linuxColorPicker"]').textContent = t.linuxColor;
             updateDisplay();
         }
-
+        // Date Control Event Listeners
+        document.getElementById('dateToggle').addEventListener('change', function (e) {
+            useDateUpdate = e.target.checked;
+            document.getElementById('dateInputContainer').style.display = useDateUpdate ? 'block' : 'none';
+            if (useDateUpdate) {
+                document.getElementById('dateInput').focus();
+            }
+            updateDisplay();
+        });
+        // Format date string to desired format
+        function formatDate(dateStr) {
+            try {
+                // Handle various hyphen types (en dash, em dash, regular hyphen)
+                const normalizedStr = dateStr.replace(/[–—-]/g, '-');
+                // Try to parse the normalized date string
+                const dateParts = normalizedStr.match(
+                    /(\d{1,2})\s+(\w+)\s+(\d{4})\s*-\s*(\d{2}):(\d{2}):(\d{2})\s*UTC/i);
+                if (dateParts) {
+                    const months = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+                    const day = parseInt(dateParts[1]);
+                    let month = dateParts[2];
+                    const year = dateParts[3];
+                    const hours = dateParts[4];
+                    const minutes = dateParts[5];
+                    const seconds = dateParts[6];
+                    // Convert month to proper capitalization
+                    month = month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
+                    if (months.includes(month)) {
+                        return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
+                    }
+                }
+                // If the above parsing fails, try the Date object as fallback
+                const date = new Date(dateStr);
+                if (!isNaN(date.getTime())) {
+                    const months = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+                    const month = months[date.getMonth()];
+                    const day = date.getDate();
+                    const year = date.getFullYear();
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
+                }
+                return dateStr; // Return original string if parsing fails
+            } catch (e) {
+                return dateStr; // Return original string if any error occurs
+            }
+        }
+        // Update the date input event listener
+        document.getElementById('dateInput').addEventListener('input', function (e) {
+            const formattedDate = formatDate(e.target.value);
+            customDate = formattedDate;
+            // Update the input value with formatted date
+            if (formattedDate !== e.target.value) {
+                e.target.value = formattedDate;
+            }
+            updateDisplay();
+        });
         // Translations
         const translations = {
             en: {
@@ -604,29 +764,13 @@
                 windowsColor: "Color de Windows:",
                 macColor: "Color de Mac:",
                 linuxColor: "Color de Linux:"
-            },
-            pi: {
-                title: "cs.rin.ru Info Text Combiner",
-                subtitle: "Merge yer platform scrolls, ye scurvy dog!",
-                dropText: "Drop ye scrolls here, matey!",
-                dropSubtext: "or click to raid yer files",
-                copyButton: "Copy the Booty",
-                clearButton: "Swab the Deck",
-                downloadButton: "Download the Loot",
-                filename: "Scroll Name",
-                platform: "Ship",
-                copied: "Treasure copied to ye clipboard!",
-                windowsColor: "Windows Ship Paint:",
-                macColor: "Mac Ship Paint:",
-                linuxColor: "Linux Ship Paint:"
             }
         };
-
         // Event Listeners
         document.getElementById('copyButton').addEventListener('click', copyOutput);
         document.getElementById('downloadButton').addEventListener('click', downloadOutput);
         document.getElementById('clearButton').addEventListener('click', clearAll);
-        document.getElementById('windowsColorPicker').addEventListener('input', function(e) {
+        document.getElementById('windowsColorPicker').addEventListener('input', function (e) {
             windowsColor = e.target.value;
             localStorage.setItem('colorPreferences', JSON.stringify({
                 windows: windowsColor,
@@ -635,7 +779,7 @@
             }));
             updateDisplay();
         });
-        document.getElementById('macColorPicker').addEventListener('input', function(e) {
+        document.getElementById('macColorPicker').addEventListener('input', function (e) {
             macColor = e.target.value;
             localStorage.setItem('colorPreferences', JSON.stringify({
                 windows: windowsColor,
@@ -644,7 +788,7 @@
             }));
             updateDisplay();
         });
-        document.getElementById('linuxColorPicker').addEventListener('input', function(e) {
+        document.getElementById('linuxColorPicker').addEventListener('input', function (e) {
             linuxColor = e.target.value;
             localStorage.setItem('colorPreferences', JSON.stringify({
                 windows: windowsColor,
@@ -654,7 +798,6 @@
             updateDisplay();
         });
         document.getElementById('languageSelect').addEventListener('change', changeLanguage);
-        
         // Initial language setup
         changeLanguage();
     </script>
