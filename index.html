@@ -90,14 +90,18 @@
             padding: 0;
             cursor: pointer;
         }
-        /* New Date Controls Styles */
         .date-controls {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
             margin-bottom: 1rem;
             background: var(--bg-secondary);
             padding: 1rem;
             border-radius: 8px;
+        }
+        .date-group {
+            display: flex;
+            gap: 1rem;
             align-items: center;
         }
         .date-toggle {
@@ -105,7 +109,6 @@
             align-items: center;
             gap: 0.5rem;
         }
-        /* Toggle Switch */
         .switch {
             position: relative;
             display: inline-block;
@@ -156,6 +159,7 @@
             padding: 0.5rem;
             border-radius: 4px;
             font-size: 1rem;
+            width: 300px;
         }
         .date-input:focus {
             outline: none;
@@ -320,6 +324,7 @@
             <option value="fr">Français</option>
             <option value="de">Deutsch</option>
             <option value="es">Español</option>
+            <option value="pi">Pirate</option>
         </select>
         <div class="header">
             <h1 id="title">cs.rin.ru Info Text Combiner</h1>
@@ -339,17 +344,42 @@
                 <input type="color" id="linuxColorPicker" value="#10b981">
             </div>
         </div>
-        <!-- New Date Controls -->
         <div class="date-controls">
-            <div class="date-toggle">
-                <label class="switch">
-                    <input type="checkbox" id="dateToggle">
-                    <span class="slider round"></span>
-                </label>
-                <span>Last public update</span>
+            <div class="date-group">
+                <div class="date-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="windowsDateToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Windows Date</span>
+                </div>
+                <div class="date-input-container" id="windowsDateContainer" style="display: none;">
+                    <input type="text" id="windowsDateInput" class="date-input" placeholder="Paste Windows date here">
+                </div>
             </div>
-            <div class="date-input-container" id="dateInputContainer" style="display: none;">
-                <input type="text" id="dateInput" class="date-input" placeholder="Paste date here">
+            <div class="date-group">
+                <div class="date-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="macDateToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Mac Date</span>
+                </div>
+                <div class="date-input-container" id="macDateContainer" style="display: none;">
+                    <input type="text" id="macDateInput" class="date-input" placeholder="Paste Mac date here">
+                </div>
+            </div>
+            <div class="date-group">
+                <div class="date-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="linuxDateToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Linux Date</span>
+                </div>
+                <div class="date-input-container" id="linuxDateContainer" style="display: none;">
+                    <input type="text" id="linuxDateInput" class="date-input" placeholder="Paste Linux date here">
+                </div>
             </div>
         </div>
         <div id="dropzone">
@@ -379,7 +409,7 @@
         <div id="output"></div>
     </div>
     <script>
-        // Initialize and load saved preferences (excluding date settings)
+        // Initialize and load saved preferences
         const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
         const savedColors = JSON.parse(localStorage.getItem('colorPreferences')) || {
             windows: '#3b82f6',
@@ -391,15 +421,13 @@
         let windowsColor = savedColors.windows;
         let macColor = savedColors.mac;
         let linuxColor = savedColors.linux;
-        // Date settings always start fresh
-        let useDateUpdate = false;
-        let customDate = '';
-        // Ensure date controls are reset on page load
-        window.addEventListener('load', () => {
-            document.getElementById('dateToggle').checked = false;
-            document.getElementById('dateInput').value = '';
-            document.getElementById('dateInputContainer').style.display = 'none';
-        });
+        // Date settings
+        let windowsDateUpdate = false;
+        let macDateUpdate = false;
+        let linuxDateUpdate = false;
+        let windowsCustomDate = '';
+        let macCustomDate = '';
+        let linuxCustomDate = '';
         // Set initial values for inputs
         document.getElementById('languageSelect').value = currentLanguage;
         document.getElementById('windowsColorPicker').value = windowsColor;
@@ -409,11 +437,46 @@
         const dropzone = document.getElementById('dropzone');
         const output = document.getElementById('output');
         const fileList = document.getElementById('fileList');
+        // Function to detect branch
+        function extractBranch(content) {
+            const branchMatch = content.match(/\[Branch:\s*([^\]]+)\]/);
+            return branchMatch && branchMatch[1] !== 'Public' ? ` [${branchMatch[1]}]` : '';
+        }
+        // Format date string to desired format
+        function formatDate(dateStr) {
+            try {
+                // Handle various hyphen types (en dash, em dash, regular hyphen)
+                const normalizedStr = dateStr.replace(/[–—-]/g, '-');
+                // Try to parse the normalized date string
+                const dateParts = normalizedStr.match(
+                    /(\d{1,2})\s+(\w+)\s+(\d{4})\s*-\s*(\d{2}):(\d{2}):(\d{2})\s*UTC/i);
+                if (dateParts) {
+                    const months = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+                    const day = parseInt(dateParts[1]);
+                    let month = dateParts[2];
+                    const year = dateParts[3];
+                    const hours = dateParts[4];
+                    const minutes = dateParts[5];
+                    const seconds = dateParts[6];
+                    // Convert month to proper capitalization
+                    month = month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
+                    if (months.includes(month)) {
+                        return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
+                    }
+                }
+                return dateStr; // Return original string if parsing fails
+            } catch (e) {
+                return dateStr; // Return original string if any error occurs
+            }
+        }
         // File Input Handling
         function handleFiles(newFiles) {
             for (let file of newFiles) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     files.push({
                         name: file.name,
                         content: e.target.result
@@ -424,26 +487,26 @@
             }
         }
         // Click to Upload
-        dropzone.onclick = function () {
+        dropzone.onclick = function() {
             const input = document.createElement('input');
             input.type = 'file';
             input.multiple = true;
             input.accept = '.txt';
-            input.onchange = function () {
+            input.onchange = function() {
                 handleFiles(this.files);
             };
             input.click();
         };
         // Drag and Drop
-        dropzone.ondragover = function (e) {
+        dropzone.ondragover = function(e) {
             e.preventDefault();
             this.classList.add('dragover');
         };
-        dropzone.ondragleave = function (e) {
+        dropzone.ondragleave = function(e) {
             e.preventDefault();
             this.classList.remove('dragover');
         };
-        dropzone.ondrop = function (e) {
+        dropzone.ondrop = function(e) {
             e.preventDefault();
             this.classList.remove('dragover');
             handleFiles(e.dataTransfer.files);
@@ -457,19 +520,38 @@
             };
             for (const file of files) {
                 let processedContent = file.content;
-                if (useDateUpdate && customDate) {
+                if (file.name.includes('Linux') && linuxDateUpdate && linuxCustomDate) {
                     // Extract build number if it exists
                     const buildMatch = processedContent.match(/\[Build\s+(\d+)\]/);
                     const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
                     // Remove any existing Build number first
                     processedContent = processedContent.replace(/\s*\[Build\s+\d+\]/g, '');
-                    // Update both Version and Uploaded version with date and build number
                     processedContent = processedContent.replace(
                         /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
-                        `$1[i]${customDate}${buildNumber}[/i]`);
+                        `$1[i]${linuxCustomDate}${buildNumber}[/i]`);
                     processedContent = processedContent.replace(
                         /(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
-                        `$1[i]${customDate}${buildNumber}[/i]`);
+                        `$1[i]${linuxCustomDate}${buildNumber}[/i]`);
+                } else if (file.name.includes('Mac') && macDateUpdate && macCustomDate) {
+                    const buildMatch = processedContent.match(/\[Build\s+(\d+)\]/);
+                    const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
+                    processedContent = processedContent.replace(/\s*\[Build\s+\d+\]/g, '');
+                    processedContent = processedContent.replace(
+                        /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
+                        `$1[i]${macCustomDate}${buildNumber}[/i]`);
+                    processedContent = processedContent.replace(
+                        /(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
+                        `$1[i]${macCustomDate}${buildNumber}[/i]`);
+                } else if (file.name.includes('Win') && windowsDateUpdate && windowsCustomDate) {
+                    const buildMatch = processedContent.match(/\[Build\s+(\d+)\]/);
+                    const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
+                    processedContent = processedContent.replace(/\s*\[Build\s+\d+\]/g, '');
+                    processedContent = processedContent.replace(
+                        /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
+                        `$1[i]${windowsCustomDate}${buildNumber}[/i]`);
+                    processedContent = processedContent.replace(
+                        /(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
+                        `$1[i]${windowsCustomDate}${buildNumber}[/i]`);
                 }
                 if (file.name.includes('Linux')) {
                     grouped.Linux.push({
@@ -491,31 +573,27 @@
             const output_text = [
                 ...grouped.Windows.map(f =>
                     `[quote][size=150][color=${windowsColor}]Windows${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
-                    ),
+                ),
                 ...grouped.Mac.map(f =>
                     `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
-                    ),
+                ),
                 ...grouped.Linux.map(f =>
                     `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}[/color][/size]\n${f.content}[/quote]`
-                    )
+                )
             ].join('\n\n');
             output.textContent = output_text;
             const fileListHTML = `
-        <div class="file-list-header">
-            <span>${translations[currentLanguage].filename}</span>
-            <span>${translations[currentLanguage].platform}</span>
-        </div>
-        ${[
-            ...grouped.Windows.map(createFileListItem),
-            ...grouped.Mac.map(createFileListItem),
-            ...grouped.Linux.map(createFileListItem)
-        ].join('')}
-    `;
+                <div class="file-list-header">
+                    <span>${translations[currentLanguage].filename}</span>
+                    <span>${translations[currentLanguage].platform}</span>
+                </div>
+                ${[
+                    ...grouped.Windows.map(createFileListItem),
+                    ...grouped.Mac.map(createFileListItem),
+                    ...grouped.Linux.map(createFileListItem)
+                ].join('')}
+            `;
             fileList.innerHTML = fileListHTML;
-        }
-        function extractBranch(content) {
-            const branchMatch = content.match(/\[Branch:\s*([^\]]+)\]/);
-            return branchMatch && branchMatch[1] !== 'Public' ? ` [${branchMatch[1]}]` : '';
         }
         function createFileListItem(file) {
             const platform = detectPlatform(file.name);
@@ -616,11 +694,21 @@
         function clearAll() {
             files.length = 0;
             // Reset date related fields
-            document.getElementById('dateToggle').checked = false;
-            document.getElementById('dateInput').value = '';
-            document.getElementById('dateInputContainer').style.display = 'none';
-            useDateUpdate = false;
-            customDate = '';
+            document.getElementById('windowsDateToggle').checked = false;
+            document.getElementById('macDateToggle').checked = false;
+            document.getElementById('linuxDateToggle').checked = false;
+            document.getElementById('windowsDateInput').value = '';
+            document.getElementById('macDateInput').value = '';
+            document.getElementById('linuxDateInput').value = '';
+            document.getElementById('windowsDateContainer').style.display = 'none';
+            document.getElementById('macDateContainer').style.display = 'none';
+            document.getElementById('linuxDateContainer').style.display = 'none';
+            windowsDateUpdate = false;
+            macDateUpdate = false;
+            linuxDateUpdate = false;
+            windowsCustomDate = '';
+            macCustomDate = '';
+            linuxCustomDate = '';
             updateDisplay();
         }
         function changeLanguage() {
@@ -640,69 +728,88 @@
             updateDisplay();
         }
         // Date Control Event Listeners
-        document.getElementById('dateToggle').addEventListener('change', function (e) {
-            useDateUpdate = e.target.checked;
-            document.getElementById('dateInputContainer').style.display = useDateUpdate ? 'block' : 'none';
-            if (useDateUpdate) {
-                document.getElementById('dateInput').focus();
+        document.getElementById('windowsDateToggle').addEventListener('change', function(e) {
+            windowsDateUpdate = e.target.checked;
+            document.getElementById('windowsDateContainer').style.display = windowsDateUpdate ? 'block' :
+                'none';
+            if (windowsDateUpdate) {
+                document.getElementById('windowsDateInput').focus();
             }
             updateDisplay();
         });
-        // Format date string to desired format
-        function formatDate(dateStr) {
-            try {
-                // Handle various hyphen types (en dash, em dash, regular hyphen)
-                const normalizedStr = dateStr.replace(/[–—-]/g, '-');
-                // Try to parse the normalized date string
-                const dateParts = normalizedStr.match(
-                    /(\d{1,2})\s+(\w+)\s+(\d{4})\s*-\s*(\d{2}):(\d{2}):(\d{2})\s*UTC/i);
-                if (dateParts) {
-                    const months = [
-                        'January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December'
-                    ];
-                    const day = parseInt(dateParts[1]);
-                    let month = dateParts[2];
-                    const year = dateParts[3];
-                    const hours = dateParts[4];
-                    const minutes = dateParts[5];
-                    const seconds = dateParts[6];
-                    // Convert month to proper capitalization
-                    month = month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
-                    if (months.includes(month)) {
-                        return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
-                    }
-                }
-                // If the above parsing fails, try the Date object as fallback
-                const date = new Date(dateStr);
-                if (!isNaN(date.getTime())) {
-                    const months = [
-                        'January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December'
-                    ];
-                    const month = months[date.getMonth()];
-                    const day = date.getDate();
-                    const year = date.getFullYear();
-                    const hours = String(date.getHours()).padStart(2, '0');
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
-                    const seconds = String(date.getSeconds()).padStart(2, '0');
-                    return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
-                }
-                return dateStr; // Return original string if parsing fails
-            } catch (e) {
-                return dateStr; // Return original string if any error occurs
+        document.getElementById('macDateToggle').addEventListener('change', function(e) {
+            macDateUpdate = e.target.checked;
+            document.getElementById('macDateContainer').style.display = macDateUpdate ? 'block' : 'none';
+            if (macDateUpdate) {
+                document.getElementById('macDateInput').focus();
             }
-        }
-        // Update the date input event listener
-        document.getElementById('dateInput').addEventListener('input', function (e) {
+            updateDisplay();
+        });
+        document.getElementById('linuxDateToggle').addEventListener('change', function(e) {
+            linuxDateUpdate = e.target.checked;
+            document.getElementById('linuxDateContainer').style.display = linuxDateUpdate ? 'block' : 'none';
+            if (linuxDateUpdate) {
+                document.getElementById('linuxDateInput').focus();
+            }
+            updateDisplay();
+        });
+        document.getElementById('windowsDateInput').addEventListener('input', function(e) {
             const formattedDate = formatDate(e.target.value);
-            customDate = formattedDate;
-            // Update the input value with formatted date
+            windowsCustomDate = formattedDate;
             if (formattedDate !== e.target.value) {
                 e.target.value = formattedDate;
             }
             updateDisplay();
         });
+        document.getElementById('macDateInput').addEventListener('input', function(e) {
+            const formattedDate = formatDate(e.target.value);
+            macCustomDate = formattedDate;
+            if (formattedDate !== e.target.value) {
+                e.target.value = formattedDate;
+            }
+            updateDisplay();
+        });
+        document.getElementById('linuxDateInput').addEventListener('input', function(e) {
+            const formattedDate = formatDate(e.target.value);
+            linuxCustomDate = formattedDate;
+            if (formattedDate !== e.target.value) {
+                e.target.value = formattedDate;
+            }
+            updateDisplay();
+        });
+        // Color picker event listeners
+        document.getElementById('windowsColorPicker').addEventListener('input', function(e) {
+            windowsColor = e.target.value;
+            localStorage.setItem('colorPreferences', JSON.stringify({
+                windows: windowsColor,
+                mac: macColor,
+                linux: linuxColor
+            }));
+            updateDisplay();
+        });
+        document.getElementById('macColorPicker').addEventListener('input', function(e) {
+            macColor = e.target.value;
+            localStorage.setItem('colorPreferences', JSON.stringify({
+                windows: windowsColor,
+                mac: macColor,
+                linux: linuxColor
+            }));
+            updateDisplay();
+        });
+        document.getElementById('linuxColorPicker').addEventListener('input', function(e) {
+            linuxColor = e.target.value;
+            localStorage.setItem('colorPreferences', JSON.stringify({
+                windows: windowsColor,
+                mac: macColor,
+                linux: linuxColor
+            }));
+            updateDisplay();
+        });
+        // Button event listeners
+        document.getElementById('copyButton').addEventListener('click', copyOutput);
+        document.getElementById('downloadButton').addEventListener('click', downloadOutput);
+        document.getElementById('clearButton').addEventListener('click', clearAll);
+        document.getElementById('languageSelect').addEventListener('change', changeLanguage);
         // Translations
         const translations = {
             en: {
@@ -764,40 +871,23 @@
                 windowsColor: "Color de Windows:",
                 macColor: "Color de Mac:",
                 linuxColor: "Color de Linux:"
+            },
+            pi: {
+                title: "cs.rin.ru Info Text Combiner",
+                subtitle: "Merge yer platform scrolls, ye scurvy dog!",
+                dropText: "Drop ye scrolls here, matey!",
+                dropSubtext: "or click to raid yer files",
+                copyButton: "Copy the Booty",
+                clearButton: "Swab the Deck",
+                downloadButton: "Download the Loot",
+                filename: "Scroll Name",
+                platform: "Ship",
+                copied: "Treasure copied to ye clipboard!",
+                windowsColor: "Windows Ship Paint:",
+                macColor: "Mac Ship Paint:",
+                linuxColor: "Linux Ship Paint:"
             }
         };
-        // Event Listeners
-        document.getElementById('copyButton').addEventListener('click', copyOutput);
-        document.getElementById('downloadButton').addEventListener('click', downloadOutput);
-        document.getElementById('clearButton').addEventListener('click', clearAll);
-        document.getElementById('windowsColorPicker').addEventListener('input', function (e) {
-            windowsColor = e.target.value;
-            localStorage.setItem('colorPreferences', JSON.stringify({
-                windows: windowsColor,
-                mac: macColor,
-                linux: linuxColor
-            }));
-            updateDisplay();
-        });
-        document.getElementById('macColorPicker').addEventListener('input', function (e) {
-            macColor = e.target.value;
-            localStorage.setItem('colorPreferences', JSON.stringify({
-                windows: windowsColor,
-                mac: macColor,
-                linux: linuxColor
-            }));
-            updateDisplay();
-        });
-        document.getElementById('linuxColorPicker').addEventListener('input', function (e) {
-            linuxColor = e.target.value;
-            localStorage.setItem('colorPreferences', JSON.stringify({
-                windows: windowsColor,
-                mac: macColor,
-                linux: linuxColor
-            }));
-            updateDisplay();
-        });
-        document.getElementById('languageSelect').addEventListener('change', changeLanguage);
         // Initial language setup
         changeLanguage();
     </script>
