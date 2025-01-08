@@ -294,23 +294,56 @@
                     });
                 }
             }
-            const output_text = [
-                ...grouped.Windows.map(f => {
-                    const versionLink = windowsLinkUpdate && windowsCustomLink ?
-                        ` [url=${windowsCustomLink}]Version Link[/url]` : '';
-                    return `[quote][size=150][color=${windowsColor}]Windows${extractBranch(f.content)}${versionLink}[/color][/size]\n${f.content}[/quote]`;
-                }),
-                ...grouped.Mac.map(f => {
-                    const versionLink = macLinkUpdate && macCustomLink ?
-                        ` [url=${macCustomLink}]Version Link[/url]` : '';
-                    return `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}${versionLink}[/color][/size]\n${f.content}[/quote]`;
-                }),
-                ...grouped.Linux.map(f => {
-                    const versionLink = linuxLinkUpdate && linuxCustomLink ?
-                        ` [url=${linuxCustomLink}]Version Link[/url]` : '';
-                    return `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}${versionLink}[/color][/size]\n${f.content}[/quote]`;
-                })
-            ].join('\n\n');
+            // Modify the output_text generation in the updateDisplay function
+const output_text = [
+    ...grouped.Windows.map(f => {
+        const content = f.content;
+        let modifiedContent = content;
+        
+        if (windowsLinkUpdate && windowsCustomLink) {
+            // Find the title portion
+            const titleMatch = content.match(/\[color=white\]\[b\](.*?)\[\/b\]\[\/color\]/);
+            if (titleMatch) {
+                // Remove the original title
+                modifiedContent = content.replace(titleMatch[0], '');
+                // Add it back wrapped in URL tags
+                modifiedContent = `[url=${windowsCustomLink}]${titleMatch[0]}[/url]${modifiedContent}`;
+            }
+        }
+        
+        return `[quote][size=150][color=${windowsColor}]Windows${extractBranch(f.content)}[/color][/size]\n${modifiedContent}[/quote]`;
+    }),
+    ...grouped.Mac.map(f => {
+        const content = f.content;
+        let modifiedContent = content;
+        
+        if (macLinkUpdate && macCustomLink) {
+            const titleMatch = content.match(/\[color=white\]\[b\](.*?)\[\/b\]\[\/color\]/);
+            if (titleMatch) {
+                modifiedContent = content.replace(titleMatch[0], '');
+                modifiedContent = `[url=${macCustomLink}]${titleMatch[0]}[/url]${modifiedContent}`;
+            }
+        }
+        
+        return `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}[/color][/size]\n${modifiedContent}[/quote]`;
+    }),
+    ...grouped.Linux.map(f => {
+        const content = f.content;
+        let modifiedContent = content;
+        
+        if (linuxLinkUpdate && linuxCustomLink) {
+            const titleMatch = content.match(/\[color=white\]\[b\](.*?)\[\/b\]\[\/color\]/);
+            if (titleMatch) {
+                modifiedContent = content.replace(titleMatch[0], '');
+                modifiedContent = `[url=${linuxCustomLink}]${titleMatch[0]}[/url]${modifiedContent}`;
+            }
+        }
+        
+        return `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}[/color][/size]\n${modifiedContent}[/quote]`;
+    })
+].join('\n\n');
+
+            
             output.textContent = output_text;
             const fileListHTML = `
                 <div class="file-list-header">
