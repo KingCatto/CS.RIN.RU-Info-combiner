@@ -1,930 +1,389 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="styles.css">
-	<title>cs.rin.ru Info Text Combiner</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>cs.rin.ru Info Text Combiner</title>
 </head>
 <body>
-	<div class="container">
-		<select class="language-selector" id="languageSelect">
-			<option value="en">English</option>
-			<option value="fr">Français</option>
-			<option value="de">Deutsch</option>
-			<option value="es">Español</option>
-		</select>
-		<div class="header">
-			<h1 id="title">cs.rin.ru Info Text Combiner</h1>
-			<p class="subtitle" id="subtitle">Combine and format your platform-specific files</p>
-		</div>
-		<div class="controls-section">
-			<h3 class="section-header">Colors</h3>
-			<!-- Color Controls -->
-			<div class="color-controls">
-				<div>
-					<label for="windowsColorPicker">Windows Color: </label>
-					<input type="color" id="windowsColorPicker" value="#3b82f6">
-				</div>
-				<div>
-					<label for="macColorPicker">Mac Color: </label>
-					<input type="color" id="macColorPicker" value="#8b5cf6">
-				</div>
-				<div>
-					<label for="linuxColorPicker">Linux Color: </label>
-					<input type="color" id="linuxColorPicker" value="#10b981">
-				</div>
-			</div>
-		</div>
-		<div class="controls-section">
-			<h3 class="section-header">Standard Version Controls</h3>
-			<!-- Windows Controls -->
-			<div class="date-group">
-				<div class="date-controls-left">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="windowsDateToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Windows Date</span>
-					</div>
-					<div class="date-input-container" id="windowsDateContainer" style="display: none;">
-						<input type="text" id="windowsDateInput" class="date-input"
-							placeholder="Paste Windows date here">
-					</div>
-				</div>
-				<div class="link-controls-right">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="windowsLinkToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Windows Link</span>
-					</div>
-					<div class="date-input-container" id="windowsLinkContainer" style="display: none;">
-						<input type="text" id="windowsLinkInput" class="date-input"
-							placeholder="Enter Windows version link">
-					</div>
-				</div>
-			</div>
-			<!-- Mac Controls -->
-			<div class="date-group">
-				<div class="date-controls-left">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="macDateToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Mac Date</span>
-					</div>
-					<div class="date-input-container" id="macDateContainer" style="display: none;">
-						<input type="text" id="macDateInput" class="date-input" placeholder="Paste Mac date here">
-					</div>
-				</div>
-				<div class="link-controls-right">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="macLinkToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Mac Link</span>
-					</div>
-					<div class="date-input-container" id="macLinkContainer" style="display: none;">
-						<input type="text" id="macLinkInput" class="date-input" placeholder="Enter Mac version link">
-					</div>
-				</div>
-			</div>
-			<!-- Linux Controls -->
-			<div class="date-group">
-				<div class="date-controls-left">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="linuxDateToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Linux Date</span>
-					</div>
-					<div class="date-input-container" id="linuxDateContainer" style="display: none;">
-						<input type="text" id="linuxDateInput" class="date-input" placeholder="Paste Linux date here">
-					</div>
-				</div>
-				<div class="link-controls-right">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="linuxLinkToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Linux Link</span>
-					</div>
-					<div class="date-input-container" id="linuxLinkContainer" style="display: none;">
-						<input type="text" id="linuxLinkInput" class="date-input"
-							placeholder="Enter Linux version link">
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Windows 32-bit Controls Section -->
-		<div class="controls-section windows32-section" style="display: none;">
-			<h3 class="section-header">Windows 32-bit Controls</h3>
-			<div class="date-group">
-				<div class="date-controls-left">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="windows32DateToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Date</span>
-					</div>
-					<div class="date-input-container" id="windows32DateContainer" style="display: none;">
-						<input type="text" id="windows32DateInput" class="date-input"
-							placeholder="Paste Windows 32-bit date here">
-					</div>
-				</div>
-				<div class="link-controls-right">
-					<div class="date-toggle">
-						<label class="switch">
-							<input type="checkbox" id="windows32LinkToggle">
-							<span class="slider round"></span>
-						</label>
-						<span>Link</span>
-					</div>
-					<div class="date-input-container" id="windows32LinkContainer" style="display: none;">
-						<input type="text" id="windows32LinkInput" class="date-input"
-							placeholder="Enter Windows 32-bit version link">
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Branch Controls Section (Dynamic) -->
-		<div class="controls-section branch-controls" style="display: none;">
-			<h3 class="section-header" id="branchSectionHeader"></h3>
-			<div class="platform-branch-controls">
-				<!-- Windows Branch Controls -->
-				<div class="date-group">
-					<div class="platform-label">Windows</div>
-					<div class="date-controls-left">
-						<div class="date-toggle">
-							<label class="switch">
-								<input type="checkbox" id="windowsBranchDateToggle">
-								<span class="slider round"></span>
-							</label>
-							<span class="branch-toggle-label">Date</span>
-						</div>
-						<div class="date-input-container" id="windowsBranchDateContainer" style="display: none;">
-							<input type="text" id="windowsBranchDateInput" class="date-input" placeholder="">
-						</div>
-					</div>
-					<div class="link-controls-right">
-						<div class="date-toggle">
-							<label class="switch">
-								<input type="checkbox" id="windowsBranchLinkToggle">
-								<span class="slider round"></span>
-							</label>
-							<span class="branch-toggle-label">Link</span>
-						</div>
-						<div class="date-input-container" id="windowsBranchLinkContainer" style="display: none;">
-							<input type="text" id="windowsBranchLinkInput" class="date-input" placeholder="">
-						</div>
-					</div>
-				</div>
-				<!-- Mac Branch Controls -->
-				<div class="date-group">
-					<div class="platform-label">Mac</div>
-					<div class="date-controls-left">
-						<div class="date-toggle">
-							<label class="switch">
-								<input type="checkbox" id="macBranchDateToggle">
-								<span class="slider round"></span>
-							</label>
-							<span class="branch-toggle-label">Date</span>
-						</div>
-						<div class="date-input-container" id="macBranchDateContainer" style="display: none;">
-							<input type="text" id="macBranchDateInput" class="date-input" placeholder="">
-						</div>
-					</div>
-					<div class="link-controls-right">
-						<div class="date-toggle">
-							<label class="switch">
-								<input type="checkbox" id="macBranchLinkToggle">
-								<span class="slider round"></span>
-							</label>
-							<span class="branch-toggle-label">Link</span>
-						</div>
-						<div class="date-input-container" id="macBranchLinkContainer" style="display: none;">
-							<input type="text" id="macBranchLinkInput" class="date-input" placeholder="">
-						</div>
-					</div>
-				</div>
-				<!-- Linux Branch Controls -->
-				<div class="date-group">
-					<div class="platform-label">Linux</div>
-					<div class="date-controls-left">
-						<div class="date-toggle">
-							<label class="switch">
-								<input type="checkbox" id="linuxBranchDateToggle">
-								<span class="slider round"></span>
-							</label>
-							<span class="branch-toggle-label">Date</span>
-						</div>
-						<div class="date-input-container" id="linuxBranchDateContainer" style="display: none;">
-							<input type="text" id="linuxBranchDateInput" class="date-input" placeholder="">
-						</div>
-					</div>
-					<div class="link-controls-right">
-						<div class="date-toggle">
-							<label class="switch">
-								<input type="checkbox" id="linuxBranchLinkToggle">
-								<span class="slider round"></span>
-							</label>
-							<span class="branch-toggle-label">Link</span>
-						</div>
-						<div class="date-input-container" id="linuxBranchLinkContainer" style="display: none;">
-							<input type="text" id="linuxBranchLinkInput" class="date-input" placeholder="">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="dropzone">
-			<div class="dropzone-content">
-				<div class="dropzone-icon">📁</div>
-				<p class="dropzone-text">Drop your text files here</p>
-				<p class="dropzone-subtext">or click to select files</p>
-			</div>
-		</div>
-		<div class="button-container">
-			<button id="copyButton">
-				<span>📋</span> Copy Output
-			</button>
-			<button id="downloadButton" class="success">
-				<span>💾</span> Download Combined
-			</button>
-			<button id="clearButton" class="danger">
-				<span>🗑️</span> Clear All
-			</button>
-		</div>
-		<div id="fileList" class="file-list">
-			<div class="file-list-header">
-				<span>Filename</span>
-				<span>Platform</span>
-			</div>
-		</div>
-		<div id="output"></div>
-	</div>
-	<!-- JavaScript -->
-	<script>
-		const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
-		const savedColors = JSON.parse(localStorage.getItem('colorPreferences')) || {
-			windows: '#3b82f6',
-			mac: '#8b5cf6',
-			linux: '#10b981'
-		};
-		const files = [];
-		let currentLanguage = savedLanguage;
-		let windowsColor = savedColors.windows;
-		let macColor = savedColors.mac;
-		let linuxColor = savedColors.linux;
-		let currentBranch = '';
-		// Standard controls variables
-		let windowsDateUpdate = false;
-		let macDateUpdate = false;
-		let linuxDateUpdate = false;
-		let windowsCustomDate = '';
-		let macCustomDate = '';
-		let linuxCustomDate = '';
-		let windowsLinkUpdate = false;
-		let macLinkUpdate = false;
-		let linuxLinkUpdate = false;
-		let windowsCustomLink = '';
-		let macCustomLink = '';
-		let linuxCustomLink = '';
-		// Windows 32-bit controls variables
-		let windows32DateUpdate = false;
-		let windows32CustomDate = '';
-		let windows32LinkUpdate = false;
-		let windows32CustomLink = '';
-		// Branch controls variables
-		const branchControls = {
-			windows: {
-				dateUpdate: false,
-				customDate: '',
-				linkUpdate: false,
-				customLink: ''
-			},
-			mac: {
-				dateUpdate: false,
-				customDate: '',
-				linkUpdate: false,
-				customLink: ''
-			},
-			linux: {
-				dateUpdate: false,
-				customDate: '',
-				linkUpdate: false,
-				customLink: ''
-			}
-		};
-		// Initialize elements
-		document.getElementById('languageSelect').value = currentLanguage;
-		document.getElementById('windowsColorPicker').value = windowsColor;
-		document.getElementById('macColorPicker').value = macColor;
-		document.getElementById('linuxColorPicker').value = linuxColor;
-		const dropzone = document.getElementById('dropzone');
-		const output = document.getElementById('output');
-		const fileList = document.getElementById('fileList');
-		// Dropzone event handlers
-		dropzone.onclick = function () {
-			const input = document.createElement('input');
-			input.type = 'file';
-			input.multiple = true;
-			input.accept = '.txt';
-			input.onchange = function () {
-				handleFiles(this.files);
-			};
-			input.click();
-		};
-		dropzone.ondragover = function (e) {
-			e.preventDefault();
-			this.classList.add('dragover');
-		};
-		dropzone.ondragleave = function (e) {
-			e.preventDefault();
-			this.classList.remove('dragover');
-		};
-		dropzone.ondrop = function (e) {
-			e.preventDefault();
-			this.classList.remove('dragover');
-			handleFiles(e.dataTransfer.files);
-		};
-		function extractBranch(content) {
-			const branchMatch = content.match(/\[Branch:\s*([^\]]+)\]/);
-			return branchMatch && branchMatch[1] !== 'Public' ? ` [${branchMatch[1]}]` : '';
-		}
-		function formatDate(dateStr) {
-			try {
-				const normalizedStr = dateStr.replace(/[–—-]/g, '-');
-				const dateParts = normalizedStr.match(/(\d{1,2})\s+(\w+)\s+(\d{4})\s*-\s*(\d{2}):(\d{2}):(\d{2})\s*UTC/i);
-				if (dateParts) {
-					const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
-						'October', 'November', 'December'
-					];
-					const day = parseInt(dateParts[1]);
-					let month = dateParts[2];
-					const year = dateParts[3];
-					const hours = dateParts[4];
-					const minutes = dateParts[5];
-					const seconds = dateParts[6];
-					month = month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
-					if (months.includes(month)) {
-						return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
-					}
-				}
-				return dateStr;
-			} catch (e) {
-				return dateStr;
-			}
-		}
-		function handleFiles(newFiles) {
-			for (let file of newFiles) {
-				const reader = new FileReader();
-				reader.onload = function (e) {
-					files.push({
-						name: file.name,
-						content: e.target.result
-					});
-					updateDisplay();
-				};
-				reader.readAsText(file);
-			}
-		}
-		function updateDisplay() {
-			const grouped = {
-				Windows: [],
-				Mac: [],
-				Linux: []
-			};
-			// First pass: detect branch
-			const allFiles = [...files];
-			const branchTypes = allFiles.map(file => {
-				const branch = file.content.match(/\[Branch:\s*([^\]]+)\]/);
-				return branch ? branch[1] : 'Public';
-			}).filter(branch => branch !== 'Public');
-			// Set current branch if any non-public branch is found
-			currentBranch = branchTypes.length > 0 ? branchTypes[0] : '';
-			// Update branch controls visibility and header
-			const branchControlsSection = document.querySelector('.branch-controls');
-			if (currentBranch) {
-				branchControlsSection.style.display = 'block';
-				document.getElementById('branchSectionHeader').textContent = `${currentBranch} Controls`;
-				// Update all branch input placeholders
-				['windows', 'mac', 'linux'].forEach(platform => {
-					const dateInput = document.getElementById(`${platform}BranchDateInput`);
-					const linkInput = document.getElementById(`${platform}BranchLinkInput`);
-					dateInput.placeholder = `Paste ${platform} ${currentBranch} date here`;
-					linkInput.placeholder = `Enter ${platform} ${currentBranch} version link`;
-				});
-			} else {
-				branchControlsSection.style.display = 'none';
-			}
-			// Check for Win32 files
-			const hasWin32 = allFiles.some(file => file.name.includes('Win32'));
-			document.querySelector('.windows32-section').style.display = hasWin32 ? 'block' : 'none';
-			// Process files
-			for (const file of files) {
-				let processedContent = file.content;
-				const isWin32 = file.name.includes('Win32');
-				const fileBranch = extractBranch(processedContent);
-				const isSpecialBranch = fileBranch.includes(currentBranch);
-				if (isWin32 && windows32DateUpdate && windows32CustomDate) {
-					processedContent = updateDateInContent(processedContent, windows32CustomDate);
-				} else if (file.name.includes('Windows') || file.name.includes('Win64')) {
-					if (isSpecialBranch && branchControls.windows.dateUpdate) {
-						processedContent = updateDateInContent(processedContent, branchControls.windows.customDate);
-					} else if (windowsDateUpdate) {
-						processedContent = updateDateInContent(processedContent, windowsCustomDate);
-					}
-				} else if (file.name.includes('Mac')) {
-					if (isSpecialBranch && branchControls.mac.dateUpdate) {
-						processedContent = updateDateInContent(processedContent, branchControls.mac.customDate);
-					} else if (macDateUpdate) {
-						processedContent = updateDateInContent(processedContent, macCustomDate);
-					}
-				} else if (file.name.includes('Linux')) {
-					if (isSpecialBranch && branchControls.linux.dateUpdate) {
-						processedContent = updateDateInContent(processedContent, branchControls.linux.customDate);
-					} else if (linuxDateUpdate) {
-						processedContent = updateDateInContent(processedContent, linuxCustomDate);
-					}
-				}
-				// Group the processed content
-				if (file.name.includes('Linux')) {
-					grouped.Linux.push({
-						...file,
-						content: processedContent
-					});
-				} else if (file.name.includes('Mac')) {
-					grouped.Mac.push({
-						...file,
-						content: processedContent
-					});
-				} else {
-					grouped.Windows.push({
-						...file,
-						content: processedContent
-					});
-				}
-			}
-			// Helper function for updating date in content
-			function updateDateInContent(content, newDate) {
-				const buildMatch = content.match(/\[Build\s+(\d+)\]/);
-				const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
-				let updated = content.replace(/\s*\[Build\s+\d+\]/g, '');
-				updated = updated.replace(/(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
-					`$1[i]${newDate}${buildNumber}[/i]`);
-				updated = updated.replace(/(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
-					`$1[i]${newDate}${buildNumber}[/i]`);
-				return updated;
-			}
-			// Generate output text
-			const output_text = [...grouped.Windows.map(f => {
-				let content = f.content;
-				let windowsLabel = 'Windows';
-				const isWin32 = f.name.includes('Win32');
-				const isSpecialBranch = extractBranch(f.content).includes(currentBranch);
-				if (isWin32) {
-					windowsLabel = 'Windows 32-bit';
-					if (windows32LinkUpdate && windows32CustomLink) {
-						const urlMatch = content.match(/\[url=.*?\]/);
-						if (urlMatch) {
-							content = content.replace(/\[url=.*?\]/, `[url=${windows32CustomLink}]`);
-						}
-					}
-				} else if (f.name.includes('Win64') && hasWin32) {
-					windowsLabel = 'Windows 64-bit';
-				}
-				if (isSpecialBranch && branchControls.windows.linkUpdate) {
-					const urlMatch = content.match(/\[url=.*?\]/);
-					if (urlMatch) {
-						content = content.replace(/\[url=.*?\]/, `[url=${branchControls.windows.customLink}]`);
-					}
-				} else if (windowsLinkUpdate && windowsCustomLink && !isWin32) {
-					const urlMatch = content.match(/\[url=.*?\]/);
-					if (urlMatch) {
-						content = content.replace(/\[url=.*?\]/, `[url=${windowsCustomLink}]`);
-					}
-				}
-				return `[quote][size=150][color=${windowsColor}]${windowsLabel}${extractBranch(f.content)}[/color][/size]\n${content}[/quote]`;
-			}), ...grouped.Mac.map(f => {
-				let content = f.content;
-				const isSpecialBranch = extractBranch(f.content).includes(currentBranch);
-				if (isSpecialBranch && branchControls.mac.linkUpdate) {
-					const urlMatch = content.match(/\[url=.*?\]/);
-					if (urlMatch) {
-						content = content.replace(/\[url=.*?\]/, `[url=${branchControls.mac.customLink}]`);
-					}
-				} else if (macLinkUpdate && macCustomLink) {
-					const urlMatch = content.match(/\[url=.*?\]/);
-					if (urlMatch) {
-						content = content.replace(/\[url=.*?\]/, `[url=${macCustomLink}]`);
-					}
-				}
-				return `[quote][size=150][color=${macColor}]Mac${extractBranch(f.content)}[/color][/size]\n${content}[/quote]`;
-			}), ...grouped.Linux.map(f => {
-				let content = f.content;
-				const isSpecialBranch = extractBranch(f.content).includes(currentBranch);
-				if (isSpecialBranch && branchControls.linux.linkUpdate) {
-					const urlMatch = content.match(/\[url=.*?\]/);
-					if (urlMatch) {
-						content = content.replace(/\[url=.*?\]/, `[url=${branchControls.linux.customLink}]`);
-					}
-				} else if (linuxLinkUpdate && linuxCustomLink) {
-					const urlMatch = content.match(/\[url=.*?\]/);
-					if (urlMatch) {
-						content = content.replace(/\[url=.*?\]/, `[url=${linuxCustomLink}]`);
-					}
-				}
-				return `[quote][size=150][color=${linuxColor}]Linux${extractBranch(f.content)}[/color][/size]\n${content}[/quote]`;
-			})].join('\n\n');
-			output.textContent = output_text;
-			// Update file list
-			const fileListHTML = `
-			<div class="file-list-header">
-				<span>${translations[currentLanguage].filename}</span>
-				<span>${translations[currentLanguage].platform}</span>
-			</div>
-			${[
-				...grouped.Windows.map(createFileListItem),
-				...grouped.Mac.map(createFileListItem),
-				...grouped.Linux.map(createFileListItem)
-			].join('')}
-		`;
-			fileList.innerHTML = fileListHTML;
-		}
-		function createFileListItem(file) {
-			const platform = detectPlatform(file.name);
-			const branch = extractBranch(file.content).replace(/[\[\]]/g, '').trim() || 'Public';
-			return `
-			<div class="file-item">
-				<span>${file.name}</span>
-				<span class="platform-tag ${platform.toLowerCase()}">${platform}</span>
-				<span class="branch-tag ${branch.toLowerCase()}">${branch}</span>
-			</div>
-		`;
-		}
-		function detectPlatform(filename) {
-			if (filename.includes('Linux64')) return 'Linux64';
-			if (filename.includes('Linux')) return 'Linux';
-			if (filename.includes('Mac')) return 'Mac';
-			if (filename.includes('Win32')) return 'Win32';
-			if (filename.includes('Win64')) return 'Win64';
-			return 'Windows';
-		}
-		function showToast(message) {
-			const toast = document.createElement('div');
-			toast.className = 'toast';
-			toast.textContent = message;
-			document.body.appendChild(toast);
-			setTimeout(() => toast.remove(), 3000);
-		}
-		function generateCombinedFileName() {
-			if (files.length === 0) return 'combined.txt';
-			let baseName = files[0].name;
-			baseName = baseName.replace(/\.txt$/, '');
-			const originalPlatformMatch = baseName.match(/(Win32|Win64|Linux64|Linux|Mac|Windows)/);
-			if (originalPlatformMatch) {
-				const platforms = new Set(files.map(file => {
-					const platform = detectPlatform(file.name);
-					return platform === 'Windows' ? 'Win' : (platform === 'Linux' ? 'Linux64' : platform);
-				}));
-				const platformString = Array.from(platforms).sort((a, b) => {
-					const order = {
-						'Win32': 1,
-						'Win64': 2,
-						'Mac': 3,
-						'Linux64': 4
-					};
-					return order[a] - order[b];
-				}).join('.');
-				baseName = baseName.replace(originalPlatformMatch[0], platformString);
-			}
-			return baseName + '.txt';
-		}
-		function copyOutput() {
-			const textToCopy = output.textContent;
-			if (!textToCopy) {
-				showToast('No content to copy');
-				return;
-			}
-			navigator.clipboard.writeText(textToCopy).then(() => {
-				showToast('Copied to clipboard!');
-			}).catch(() => {
-				const textarea = document.createElement('textarea');
-				textarea.value = textToCopy;
-				textarea.style.position = 'fixed';
-				textarea.style.opacity = '0';
-				document.body.appendChild(textarea);
-				textarea.select();
-				try {
-					document.execCommand('copy');
-					showToast('Copied to clipboard!');
-				} catch (err) {
-					console.error('Failed to copy:', err);
-					showToast('Failed to copy to clipboard');
-				}
-				document.body.removeChild(textarea);
-			});
-		}
-		function downloadOutput() {
-			if (!output.textContent) {
-				showToast('No content to download');
-				return;
-			}
-			const fileName = generateCombinedFileName();
-			const blob = new Blob([output.textContent], {
-				type: 'text/plain'
-			});
-			const url = window.URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = fileName;
-			document.body.appendChild(a);
-			a.click();
-			window.URL.revokeObjectURL(url);
-			document.body.removeChild(a);
-			showToast('File downloaded!');
-		}
-		function clearAll() {
-			files.length = 0;
-			// Clear standard controls
-			['windows', 'mac', 'linux'].forEach(platform => {
-				document.getElementById(`${platform}DateToggle`).checked = false;
-				document.getElementById(`${platform}DateInput`).value = '';
-				document.getElementById(`${platform}DateContainer`).style.display = 'none';
-				document.getElementById(`${platform}LinkToggle`).checked = false;
-				document.getElementById(`${platform}LinkInput`).value = '';
-				document.getElementById(`${platform}LinkContainer`).style.display = 'none';
-			});
-			windowsDateUpdate = false;
-			macDateUpdate = false;
-			linuxDateUpdate = false;
-			windowsCustomDate = '';
-			macCustomDate = '';
-			linuxCustomDate = '';
-			windowsLinkUpdate = false;
-			macLinkUpdate = false;
-			linuxLinkUpdate = false;
-			windowsCustomLink = '';
-			macCustomLink = '';
-			linuxCustomLink = '';
-			// Clear Windows 32-bit controls
-			document.getElementById('windows32DateToggle').checked = false;
-			document.getElementById('windows32DateInput').value = '';
-			document.getElementById('windows32DateContainer').style.display = 'none';
-			document.getElementById('windows32LinkToggle').checked = false;
-			document.getElementById('windows32LinkInput').value = '';
-			document.getElementById('windows32LinkContainer').style.display = 'none';
-			windows32DateUpdate = false;
-			windows32CustomDate = '';
-			windows32LinkUpdate = false;
-			windows32CustomLink = '';
-			// Clear branch controls
-			['windows', 'mac', 'linux'].forEach(platform => {
-				document.getElementById(`${platform}BranchDateToggle`).checked = false;
-				document.getElementById(`${platform}BranchDateInput`).value = '';
-				document.getElementById(`${platform}BranchDateContainer`).style.display = 'none';
-				document.getElementById(`${platform}BranchLinkToggle`).checked = false;
-				document.getElementById(`${platform}BranchLinkInput`).value = '';
-				document.getElementById(`${platform}BranchLinkContainer`).style.display = 'none';
-				branchControls[platform] = {
-					dateUpdate: false,
-					customDate: '',
-					linkUpdate: false,
-					customLink: ''
-				};
-			});
-			currentBranch = '';
-			document.querySelector('.branch-controls').style.display = 'none';
-			document.querySelector('.windows32-section').style.display = 'none';
-			updateDisplay();
-		}
-		// Event Listeners
-		// Standard control listeners
-		['windows', 'mac', 'linux'].forEach(platform => {
-			document.getElementById(`${platform}DateToggle`).addEventListener('change', function (e) {
-				window[`${platform}DateUpdate`] = e.target.checked;
-				document.getElementById(`${platform}DateContainer`).style.display =
-					window[`${platform}DateUpdate`] ? 'block' : 'none';
-				if (window[`${platform}DateUpdate`]) {
-					document.getElementById(`${platform}DateInput`).focus();
-				}
-				updateDisplay();
-			});
-			document.getElementById(`${platform}DateInput`).addEventListener('input', function (e) {
-				const formattedDate = formatDate(e.target.value);
-				window[`${platform}CustomDate`] = formattedDate;
-				if (formattedDate !== e.target.value) {
-					e.target.value = formattedDate;
-				}
-				updateDisplay();
-			});
-			document.getElementById(`${platform}LinkToggle`).addEventListener('change', function (e) {
-				window[`${platform}LinkUpdate`] = e.target.checked;
-				document.getElementById(`${platform}LinkContainer`).style.display =
-					window[`${platform}LinkUpdate`] ? 'block' : 'none';
-				if (window[`${platform}LinkUpdate`]) {
-					document.getElementById(`${platform}LinkInput`).focus();
-				}
-				updateDisplay();
-			});
-			document.getElementById(`${platform}LinkInput`).addEventListener('input', function (e) {
-				window[`${platform}CustomLink`] = e.target.value;
-				updateDisplay();
-			});
-		});
-		// Windows 32-bit control listeners
-		document.getElementById('windows32DateToggle').addEventListener('change', function (e) {
-			windows32DateUpdate = e.target.checked;
-			document.getElementById('windows32DateContainer').style.display = windows32DateUpdate ? 'block' : 'none';
-			if (windows32DateUpdate) {
-				document.getElementById('windows32DateInput').focus();
-			}
-			updateDisplay();
-		});
-		document.getElementById('windows32DateInput').addEventListener('input', function (e) {
-			const formattedDate = formatDate(e.target.value);
-			windows32CustomDate = formattedDate;
-			if (formattedDate !== e.target.value) {
-				e.target.value = formattedDate;
-			}
-			updateDisplay();
-		});
-		document.getElementById('windows32LinkToggle').addEventListener('change', function (e) {
-			windows32LinkUpdate = e.target.checked;
-			document.getElementById('windows32LinkContainer').style.display = windows32LinkUpdate ? 'block' : 'none';
-			if (windows32LinkUpdate) {
-				document.getElementById('windows32LinkInput').focus();
-			}
-			updateDisplay();
-		});
-		document.getElementById('windows32LinkInput').addEventListener('input', function (e) {
-			windows32CustomLink = e.target.value;
-			updateDisplay();
-		});
-		// Branch control listeners
-		['windows', 'mac', 'linux'].forEach(platform => {
-			document.getElementById(`${platform}BranchDateToggle`).addEventListener('change', function (e) {
-				branchControls[platform].dateUpdate = e.target.checked;
-				document.getElementById(`${platform}BranchDateContainer`).style.display =
-					branchControls[platform].dateUpdate ? 'block' : 'none';
-				if (branchControls[platform].dateUpdate) {
-					document.getElementById(`${platform}BranchDateInput`).focus();
-				}
-				updateDisplay();
-			});
-			document.getElementById(`${platform}BranchDateInput`).addEventListener('input', function (e) {
-				const formattedDate = formatDate(e.target.value);
-				branchControls[platform].customDate = formattedDate;
-				if (formattedDate !== e.target.value) {
-					e.target.value = formattedDate;
-				}
-				updateDisplay();
-			});
-			document.getElementById(`${platform}BranchLinkToggle`).addEventListener('change', function (e) {
-				branchControls[platform].linkUpdate = e.target.checked;
-				document.getElementById(`${platform}BranchLinkContainer`).style.display =
-					branchControls[platform].linkUpdate ? 'block' : 'none';
-				if (branchControls[platform].linkUpdate) {
-					document.getElementById(`${platform}BranchLinkInput`).focus();
-				}
-				updateDisplay();
-			});
-			document.getElementById(`${platform}BranchLinkInput`).addEventListener('input', function (e) {
-				branchControls[platform].customLink = e.target.value;
-				updateDisplay();
-			});
-		});
-		// Color picker listeners
-		document.getElementById('windowsColorPicker').addEventListener('input', function (e) {
-			windowsColor = e.target.value;
-			localStorage.setItem('colorPreferences', JSON.stringify({
-				windows: windowsColor,
-				mac: macColor,
-				linux: linuxColor
-			}));
-			updateDisplay();
-		});
-		document.getElementById('macColorPicker').addEventListener('input', function (e) {
-			macColor = e.target.value;
-			localStorage.setItem('colorPreferences', JSON.stringify({
-				windows: windowsColor,
-				mac: macColor,
-				linux: linuxColor
-			}));
-			updateDisplay();
-		});
-		document.getElementById('linuxColorPicker').addEventListener('input', function (e) {
-			linuxColor = e.target.value;
-			localStorage.setItem('colorPreferences', JSON.stringify({
-				windows: windowsColor,
-				mac: macColor,
-				linux: linuxColor
-			}));
-			updateDisplay();
-		});
-		// Button listeners
-		document.getElementById('copyButton').addEventListener('click', copyOutput);
-		document.getElementById('downloadButton').addEventListener('click', downloadOutput);
-		document.getElementById('clearButton').addEventListener('click', clearAll);
-		document.getElementById('languageSelect').addEventListener('change', changeLanguage);
-		// Translations
-		const translations = {
-			en: {
-				title: "cs.rin.ru Info Text Combiner",
-				subtitle: "Combine and format your platform-specific files",
-				dropText: "Drop your text files here",
-				dropSubtext: "or click to select files",
-				copyButton: "Copy Output",
-				clearButton: "Clear All",
-				downloadButton: "Download Combined",
-				filename: "Filename",
-				platform: "Platform",
-				copied: "Copied to clipboard!",
-				windowsColor: "Windows Color:",
-				macColor: "Mac Color:",
-				linuxColor: "Linux Color:",
-				unstableLabel: "Unstable",
-				betaLabel: "Beta"
-			},
-			fr: {
-				title: "cs.rin.ru Info Text Combiner",
-				subtitle: "Combinez et formatez vos fichiers spécifiques à la plateforme",
-				dropText: "Déposez vos fichiers texte ici",
-				dropSubtext: "ou cliquez pour sélectionner des fichiers",
-				copyButton: "Copier",
-				clearButton: "Tout Effacer",
-				downloadButton: "Télécharger",
-				filename: "Nom du fichier",
-				platform: "Plateforme",
-				copied: "Copié dans le presse-papiers !",
-				windowsColor: "Couleur Windows :",
-				macColor: "Couleur Mac :",
-				linuxColor: "Couleur Linux :",
-				unstableLabel: "Instable",
-				betaLabel: "Bêta"
-			},
-			de: {
-				title: "cs.rin.ru Info Text Combiner",
-				subtitle: "Kombinieren und formatieren Sie Ihre plattformspezifischen Dateien",
-				dropText: "Legen Sie Ihre Textdateien hier ab",
-				dropSubtext: "oder klicken Sie zum Auswählen",
-				copyButton: "Kopieren",
-				clearButton: "Alles Löschen",
-				downloadButton: "Herunterladen",
-				filename: "Dateiname",
-				platform: "Plattform",
-				copied: "In die Zwischenablage kopiert!",
-				windowsColor: "Windows-Farbe:",
-				macColor: "Mac-Farbe:",
-				linuxColor: "Linux-Farbe:",
-				unstableLabel: "Instabil",
-				betaLabel: "Beta"
-			},
-			es: {
-				title: "cs.rin.ru Info Text Combiner",
-				subtitle: "Combina y formatea tus archivos específicos de plataforma",
-				dropText: "Suelta tus archivos de texto aquí",
-				dropSubtext: "o haz clic para seleccionar archivos",
-				copyButton: "Copiar",
-				clearButton: "Borrar Todo",
-				downloadButton: "Descargar",
-				filename: "Nombre del archivo",
-				platform: "Plataforma",
-				copied: "¡Copiado al portapapeles!",
-				windowsColor: "Color de Windows:",
-				macColor: "Color de Mac:",
-				linuxColor: "Color de Linux:",
-				unstableLabel: "Inestable",
-				betaLabel: "Beta"
-			}
-		};
-		function changeLanguage() {
-			currentLanguage = document.getElementById('languageSelect').value;
-			localStorage.setItem('preferredLanguage', currentLanguage);
-			const t = translations[currentLanguage];
-			document.getElementById('title').textContent = t.title;
-			document.getElementById('subtitle').textContent = t.subtitle;
-			document.querySelector('.dropzone-text').textContent = t.dropText;
-			document.querySelector('.dropzone-subtext').textContent = t.dropSubtext;
-			document.getElementById('copyButton').innerHTML = `<span>📋</span> ${t.copyButton}`;
-			document.getElementById('downloadButton').innerHTML = `<span>💾</span> ${t.downloadButton}`;
-			document.getElementById('clearButton').innerHTML = `<span>🗑️</span> ${t.clearButton}`;
-			document.querySelector('label[for="windowsColorPicker"]').textContent = t.windowsColor;
-			document.querySelector('label[for="macColorPicker"]').textContent = t.macColor;
-			document.querySelector('label[for="linuxColorPicker"]').textContent = t.linuxColor;
-			updateDisplay();
-		}
-		// Initialize language
-		changeLanguage();
-	</script>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 id="title">cs.rin.ru Info Text Combiner</h1>
+            <p class="subtitle" id="subtitle">Combine and format your platform-specific files</p>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Color Controls Section -->
+                <section class="controls-section">
+                    <h3 class="section-header">Colors</h3>
+                    <div class="color-controls">
+                        <div>
+                            <label for="windowsColorPicker">Windows Color: </label>
+                            <input type="color" id="windowsColorPicker" value="#3b82f6">
+                        </div>
+                        <div>
+                            <label for="macColorPicker">Mac Color: </label>
+                            <input type="color" id="macColorPicker" value="#8b5cf6">
+                        </div>
+                        <div>
+                            <label for="linuxColorPicker">Linux Color: </label>
+                            <input type="color" id="linuxColorPicker" value="#10b981">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- File List Section -->
+                <section class="controls-section">
+                    <h3 class="section-header">Files</h3>
+                    <div id="fileList" class="file-list">
+                        <div class="file-list-header">
+                            <span>Filename</span>
+                            <span>Platform</span>
+                            <span>Branch</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Version Controls Section -->
+                <section class="controls-section">
+                    <h3 class="section-header">Version Controls</h3>
+                    <div class="version-controls">
+                        <!-- Public Branch Controls -->
+                        <div class="branch-specific-controls public-branch-controls">
+                            <h4>Standard Version</h4>
+                            <div class="platform-controls">
+                                <div class="platform-group">
+                                    <!-- Windows Controls -->
+                                    <div class="control-group">
+                                        <div class="toggle-pair">
+                                            <div class="date-toggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="windowsPublicDateToggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>Windows 64-bit Date</span>
+                                            </div>
+                                            <div class="date-toggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="windowsPublicLinkToggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>Windows 64-bit Link</span>
+                                            </div>
+                                        </div>
+                                        <div class="input-pair">
+                                            <div id="windowsPublicDateContainer" class="date-input-container">
+                                                <input type="text" id="windowsPublicDateInput" class="date-input" placeholder="Paste Windows date here">
+                                            </div>
+                                            <div id="windowsPublicLinkContainer" class="date-input-container">
+                                                <input type="text" id="windowsPublicLinkInput" class="date-input" placeholder="Enter Windows version link">
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Mac Controls -->
+                                    <div class="control-group">
+                                        <div class="toggle-pair">
+                                            <div class="date-toggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="macPublicDateToggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>Mac Date</span>
+                                            </div>
+                                            <div class="date-toggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="macPublicLinkToggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>Mac Link</span>
+                                            </div>
+                                        </div>
+                                        <div class="input-pair">
+                                            <div id="macPublicDateContainer" class="date-input-container">
+                                                <input type="text" id="macPublicDateInput" class="date-input" placeholder="Paste Mac date here">
+                                            </div>
+                                            <div id="macPublicLinkContainer" class="date-input-container">
+                                                <input type="text" id="macPublicLinkInput" class="date-input" placeholder="Enter Mac version link">
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Linux Controls -->
+                                    <div class="control-group">
+                                        <div class="toggle-pair">
+                                            <div class="date-toggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="linuxPublicDateToggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>Linux Date</span>
+                                            </div>
+                                            <div class="date-toggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="linuxPublicLinkToggle">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>Linux Link</span>
+                                            </div>
+                                        </div>
+                                        <div class="input-pair">
+                                            <div id="linuxPublicDateContainer" class="date-input-container">
+                                                <input type="text" id="linuxPublicDateInput" class="date-input" placeholder="Paste Linux date here">
+                                            </div>
+                                            <div id="linuxPublicLinkContainer" class="date-input-container">
+                                                <input type="text" id="linuxPublicLinkInput" class="date-input" placeholder="Enter Linux version link">
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Windows 32-bit Controls -->
+                                    <div class="win32-controls" style="display: none;">
+                                        <h4>Windows 32-bit</h4>
+                                        <div class="control-group">
+                                            <div class="toggle-pair">
+                                                <div class="date-toggle">
+                                                    <label class="switch">
+                                                        <input type="checkbox" id="windows32DateToggle">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                    <span>Windows 32-bit Date</span>
+                                                </div>
+                                                <div class="date-toggle">
+                                                    <label class="switch">
+                                                        <input type="checkbox" id="windows32LinkToggle">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                    <span>Windows 32-bit Link</span>
+                                                </div>
+                                            </div>
+                                            <div class="input-pair">
+                                                <div id="windows32DateContainer" class="date-input-container">
+                                                    <input type="text" id="windows32DateInput" class="date-input" placeholder="Paste Windows 32-bit date here">
+                                                </div>
+                                                <div id="windows32LinkContainer" class="date-input-container">
+                                                    <input type="text" id="windows32LinkInput" class="date-input" placeholder="Enter Windows 32-bit version link">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Beta Branch Controls -->
+                        <div class="branch-specific-controls beta-branch-controls" style="display: none;">
+                            <h4>Beta Branch</h4>
+                            <div class="platform-group">
+                                <!-- Windows Beta -->
+                                <div class="control-group">
+                                    <div class="toggle-pair">
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="windowsBetaDateToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Windows 64-bit Date</span>
+                                        </div>
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="windowsBetaLinkToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Windows 64-bit Link</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-pair">
+                                        <div id="windowsBetaDateContainer" class="date-input-container">
+                                            <input type="text" id="windowsBetaDateInput" class="date-input" placeholder="Paste Windows Beta date here">
+                                        </div>
+                                        <div id="windowsBetaLinkContainer" class="date-input-container">
+                                            <input type="text" id="windowsBetaLinkInput" class="date-input" placeholder="Enter Windows Beta version link">
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <!-- Mac Beta -->
+                                <div class="control-group">
+                                    <div class="toggle-pair">
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="macBetaDateToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Mac Date</span>
+                                        </div>
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="macBetaLinkToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Mac Link</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-pair">
+                                        <div id="macBetaDateContainer" class="date-input-container">
+                                            <input type="text" id="macBetaDateInput" class="date-input" placeholder="Paste Mac Beta date here">
+                                        </div>
+                                        <div id="macBetaLinkContainer" class="date-input-container">
+                                            <input type="text" id="macBetaLinkInput" class="date-input" placeholder="Enter Mac Beta version link">
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <!-- Linux Beta -->
+                                <div class="control-group">
+                                    <div class="toggle-pair">
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="linuxBetaDateToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Linux Date</span>
+                                        </div>
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="linuxBetaLinkToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Linux Link</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-pair">
+                                        <div id="linuxBetaDateContainer" class="date-input-container">
+                                            <input type="text" id="linuxBetaDateInput" class="date-input" placeholder="Paste Linux Beta date here">
+                                        </div>
+                                        <div id="linuxBetaLinkContainer" class="date-input-container">
+                                            <input type="text" id="linuxBetaLinkInput" class="date-input" placeholder="Enter Linux Beta version link">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Unstable Branch Controls -->
+                        <div class="branch-specific-controls unstable-branch-controls" style="display: none;">
+                            <h4>Unstable Branch</h4>
+                            <div class="platform-group">
+                                <!-- Windows Unstable -->
+                                <div class="control-group">
+                                    <div class="toggle-pair">
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="windowsUnstableDateToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Windows 64-bit Date</span>
+                                        </div>
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="windowsUnstableLinkToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Windows 64-bit Link</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-pair">
+                                        <div id="windowsUnstableDateContainer" class="date-input-container">
+                                            <input type="text" id="windowsUnstableDateInput" class="date-input" placeholder="Paste Windows Unstable date here">
+                                        </div>
+                                        <div id="windowsUnstableLinkContainer" class="date-input-container">
+                                            <input type="text" id="windowsUnstableLinkInput" class="date-input" placeholder="Enter Windows Unstable version link">
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <!-- Mac Unstable -->
+                                <div class="control-group">
+                                    <div class="toggle-pair">
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="macUnstableDateToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Mac Date</span>
+                                        </div>
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="macUnstableLinkToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Mac Link</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-pair">
+                                        <div id="macUnstableDateContainer" class="date-input-container">
+                                            <input type="text" id="macUnstableDateInput" class="date-input" placeholder="Paste Mac Unstable date here">
+                                        </div>
+                                        <div id="macUnstableLinkContainer" class="date-input-container">
+                                            <input type="text" id="macUnstableLinkInput" class="date-input" placeholder="Enter Mac Unstable version link">
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <!-- Linux Unstable -->
+                                <div class="control-group">
+                                    <div class="toggle-pair">
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="linuxUnstableDateToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Linux Date</span>
+                                        </div>
+                                        <div class="date-toggle">
+                                            <label class="switch">
+                                                <input type="checkbox" id="linuxUnstableLinkToggle">
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span>Linux Link</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-pair">
+                                        <div id="linuxUnstableDateContainer" class="date-input-container">
+                                            <input type="text" id="linuxUnstableDateInput" class="date-input" placeholder="Paste Linux Unstable date here">
+                                        </div>
+                                        <div id="linuxUnstableLinkContainer" class="date-input-container">
+                                            <input type="text" id="linuxUnstableLinkInput" class="date-input" placeholder="Enter Linux Unstable version link">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Dropzone Section -->
+        <div id="dropzone">
+            <div class="dropzone-content">
+                <div class="dropzone-icon">📁</div>
+                <p class="dropzone-text">Drop your text files here</p>
+                <p class="dropzone-subtext">or click to select files</p>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="button-container">
+            <button id="copyButton"><span>📋</span> Copy Output</button>
+            <button id="downloadButton" class="success"><span>💾</span> Download Combined</button>
+            <button id="clearButton" class="danger"><span>🗑️</span> Clear All</button>
+        </div>
+
+        <!-- Output Area -->
+        <div id="output"></div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 </body>
 </html>
