@@ -263,35 +263,231 @@ function handleFiles(newFiles) {
     }
 }
 
+// Get the local timezone offset in minutes
+let userTimezoneOffset = new Date().getTimezoneOffset();
+
 // Format date
 function formatDate(dateStr) {
     try {
-        const normalizedStr = dateStr.replace(/[–—-]/g, '-');
-        const dateParts = normalizedStr.match(/(\d{1,2})\s+(\w+)\s+(\d{4})\s*-\s*(\d{2}):(\d{2}):(\d{2})\s*UTC/i);
+        // Clean up the input string
+        const cleanStr = dateStr.trim()
+            .replace(/[–—]/g, '-')  // Normalize dashes
+            .replace(/\s+/g, ' ')   // Normalize spaces
+            .toLowerCase();
+
+        // Check for the specific format: "Dec 17, 2024, 08:56:22 AM"
+        const localTimePattern = /^([a-z]+)\s+(\d{1,2}),\s*(\d{4}),\s*(\d{1,2}):(\d{1,2}):(\d{1,2})\s*(am|pm)/i;
+        const timeMatch = cleanStr.match(localTimePattern);
         
-        if (dateParts) {
-            const months = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            const day = parseInt(dateParts[1]);
-            let month = dateParts[2];
-            const year = dateParts[3];
-            const hours = dateParts[4];
-            const minutes = dateParts[5];
-            const seconds = dateParts[6];
+        if (timeMatch) {
+            const [_, monthStr, day, year, hours, minutes, seconds, ampm] = timeMatch;
+            const months = ['january', 'february', 'march', 'april', 'may', 'june',
+                          'july', 'august', 'september', 'october', 'november', 'december'];
             
-            month = month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
-            if (months.includes(month)) {
-                return `${month} ${day}, ${year} - ${hours}:${minutes}:${seconds} UTC`;
+            // Convert month name to index (0-11)
+            const month = months.findIndex(m => m.startsWith(monthStr.toLowerCase()));
+            
+            // Convert hours to 24-hour format first
+            let hour = parseInt(hours);
+            if (ampm.toLowerCase() === 'pm' && hour !== 12) hour += 12;
+            if (ampm.toLowerCase() === 'am' && hour === 12) hour = 0;
+
+            // Create date in UTC accounting for user's timezone
+            // getTimezoneOffset() returns minutes, and is opposite of what you might expect
+            // e.g., EST is 300, so we subtract it (add the negative) to convert to UTC
+            const offsetHours = -userTimezoneOffset / 60;
+            
+            const utcDate = new Date(Date.UTC(
+                parseInt(year),
+                month,
+                parseInt(day),
+                hour + offsetHours, // Add the offset to convert from local to UTC
+                parseInt(minutes),
+                parseInt(seconds)
+            ));
+            
+            return `${months[utcDate.getUTCMonth()].charAt(0).toUpperCase() + 
+                    months[utcDate.getUTCMonth()].slice(1)} ${utcDate.getUTCDate()}, ${
+                    utcDate.getUTCFullYear()} - ${
+                    String(utcDate.getUTCHours()).padStart(2, '0')}:${
+                    String(utcDate.getUTCMinutes()).padStart(2, '0')}:${
+                    String(utcDate.getUTCSeconds()).padStart(2, '0')} UTC`;
+        }
+
+        let date;
+
+        // Try Unix timestamp first
+        if (/^\d+$/.test(cleanStr)) {
+            date = new Date(parseInt(cleanStr) * 1000);
+            if (!isNaN(date.getTime())) {
+                return formatToUTC(date);
             }
         }
-        return dateStr;
+
+        // Try parsing with built-in Date
+        // Remove timezone info temporarily for consistent parsing
+        const withoutTZ = cleanStr.replace(/\s*(?:utc|gmt|[+-]\d{1,4}|[a-z]{3,4})$/i, '');
+        
+        // Try multiple date formats
+        const attempts = [
+            // Original string
+            cleanStr,
+            // Try with UTC explicitly
+            cleanStr + ' UTC',
+            // Try different separators
+            withoutTZ.replace(/[\/-]/g, '.'),
+            withoutTZ.replace(/[\.-]/g, '/'),
+            withoutTZ.replace(/[\.\/]/g, '-'),
+            // Try with and without time
+            withoutTZ.split(/\s+\d{1,2}:/)[0],
+            // Try different year positions
+            withoutTZ.replace(/(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/, '$3/$2/$1'),
+            // Try month name variants
+            ...tryMonthVariants(withoutTZ)
+        ];
+
+        for (let attempt of attempts) {
+            date = new Date(attempt);
+            if (isValidDate(date)) {
+                // If no timezone was specified in original input, treat as UTC
+                if (!dateStr.toLowerCase().includes('utc') && 
+                    !dateStr.match(/[+-]\d{1,4}$/) && 
+                    !dateStr.match(/[a-z]{3,4}$/i)) {
+                    date = new Date(Date.UTC(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                        date.getHours(),
+                        date.getMinutes(),
+                        date.getSeconds()
+                    ));
+                }
+                return formatToUTC(date);
+            }
+        }
+
+        // If all attempts fail, try manual parsing
+        const patterns = [
+            // 10 January 2025 - 01:26:40
+            /^(\d{1,2})\s*([a-z]+)\s*(\d{4})\s*[-–—]?\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
+            // January 10, 2025 - 01:26:40
+            /^([a-z]+)\s*(\d{1,2}),?\s*(\d{4})\s*[-–—]?\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
+            // 1/10/25 10:04:44 or 1-10-25 10:04:44
+            /^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
+            // 2025/10/1 10:04:44 or 2025-10-1 10:04:44
+            /^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
+            // 10:04:44 1/10/25
+            /^(\d{1,2}):(\d{1,2}):(\d{1,2})\s*(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/i
+        ];
+
+        for (let pattern of patterns) {
+            const match = withoutTZ.match(pattern);
+            if (match) {
+                const parts = Array.from(match).slice(1).map(p => p ? parseInt(p) : 0);
+                date = createDateFromParts(pattern, parts);
+                if (isValidDate(date)) {
+                    return formatToUTC(date);
+                }
+            }
+        }
+
+        return dateStr; // Return original if all parsing attempts fail
     } catch (e) {
+        console.error('Date parsing error:', e);
         return dateStr;
     }
 }
 
+// Helper function to validate date
+function isValidDate(date) {
+    return date instanceof Date && !isNaN(date.getTime());
+}
+
+// Helper function to format date to UTC string
+function formatToUTC(date) {
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    return `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} - ${
+        String(date.getUTCHours()).padStart(2, '0')}:${
+        String(date.getUTCMinutes()).padStart(2, '0')}:${
+        String(date.getUTCSeconds()).padStart(2, '0')} UTC`;
+}
+
+// Helper function to try different month name variants
+function tryMonthVariants(dateStr) {
+    const months = {
+        'january': ['jan'],
+        'february': ['feb'],
+        'march': ['mar'],
+        'april': ['apr'],
+        'may': ['may'],
+        'june': ['jun'],
+        'july': ['jul'],
+        'august': ['aug'],
+        'september': ['sep', 'sept'],
+        'october': ['oct'],
+        'november': ['nov'],
+        'december': ['dec']
+    };
+
+    const variants = [];
+    for (const [full, abbrevs] of Object.entries(months)) {
+        for (const abbrev of abbrevs) {
+            variants.push(
+                dateStr.replace(new RegExp(full, 'i'), abbrev),
+                dateStr.replace(new RegExp(abbrev, 'i'), full)
+            );
+        }
+    }
+    return variants;
+}
+
+// Helper function to create date from pattern matches
+function createDateFromParts(pattern, parts) {
+    let year, month, day, hours = 0, minutes = 0, seconds = 0;
+
+    // Handle different pattern formats
+    if (pattern.source.startsWith('^\\d{1,2}\\s*[a-z]+')) {
+        // 10 January 2025 format
+        [day, , year, hours, minutes, seconds] = parts;
+        month = getMonthIndex(parts[1]);
+    } else if (pattern.source.startsWith('^[a-z]+')) {
+        // January 10, 2025 format
+        [, day, year, hours, minutes, seconds] = parts;
+        month = getMonthIndex(parts[0]);
+    } else if (pattern.source.startsWith('^\\d{1,2}[-\\/.]')) {
+        // 1/10/25 format
+        [month, day, year, hours, minutes, seconds] = parts;
+        month--; // Adjust month to 0-based index
+        if (year < 100) year += 2000;
+    } else if (pattern.source.startsWith('^\\d{4}[-\\/.]')) {
+        // 2025/10/1 format
+        [year, month, day, hours, minutes, seconds] = parts;
+        month--; // Adjust month to 0-based index
+    } else if (pattern.source.startsWith('^\\d{1,2}:')) {
+        // 10:04:44 1/10/25 format
+        [hours, minutes, seconds, month, day, year] = parts;
+        month--; // Adjust month to 0-based index
+        if (year < 100) year += 2000;
+    }
+
+    return new Date(Date.UTC(year, month, day, hours, minutes, seconds));
+}
+
+// Helper function to get month index from name
+function getMonthIndex(monthStr) {
+    const months = [
+        'january', 'february', 'march', 'april', 'may', 'june',
+        'july', 'august', 'september', 'october', 'november', 'december'
+    ];
+    const monthName = monthStr.toLowerCase();
+    let index = months.findIndex(m => m.startsWith(monthName));
+    if (index === -1) index = months.findIndex(m => m === monthName);
+    return index;
+}
 // Update branch controls visibility
 function updateBranchControls() {
     const branches = new Set();
