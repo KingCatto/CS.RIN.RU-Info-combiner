@@ -656,13 +656,13 @@ function extractBranch(content) {
 
 // Detect platform from filename
 function detectPlatform(filename) {
-    if (filename.includes('Linux64')) return 'linux';
-    if (filename.includes('Linux')) return 'linux';
-    if (filename.includes('Mac')) return 'mac';
-    if (filename.includes('Win32')) return 'win32';  // Return win32 specifically
-    if (filename.includes('Win64')) return 'windows';
-    if (filename.includes('Windows')) return 'windows';
-    return 'windows';  // Default to windows if no specific platform found
+    if (filename.includes('.Linux64.')) return 'linux';
+    if (filename.includes('.Linux.')) return 'linux';
+    if (filename.includes('.Mac.')) return 'mac';
+    if (filename.includes('.Win32.')) return 'win32';
+    if (filename.includes('.Win64.')) return 'windows';
+    if (filename.includes('.Windows.')) return 'windows';
+    return 'windows';
 }
 
 function createSpaceBackground() {
