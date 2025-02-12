@@ -665,132 +665,79 @@ function detectPlatform(filename) {
     return 'windows';
 }
 
+// Optimized createSpaceBackground function
 function createSpaceBackground() {
     const spaceBackground = document.createElement('div');
     spaceBackground.id = 'space-background';
     document.body.prepend(spaceBackground);
 
-    // Add enhanced nebula effect
+    // Add reduced nebula effect with lower opacity and fewer gradients
     const nebula = document.createElement('div');
     nebula.className = 'nebula';
     spaceBackground.appendChild(nebula);
 
-    // Create enhanced star clusters
-    for (let i = 0; i < 5; i++) {
+    // Reduce number of star clusters
+    for (let i = 0; i < 3; i++) {
         const cluster = document.createElement('div');
         cluster.className = 'star-cluster';
-        cluster.style.width = `${Math.random() * 200 + 150}px`;
+        cluster.style.width = `${Math.random() * 150 + 100}px`;
         cluster.style.height = cluster.style.width;
         cluster.style.left = `${Math.random() * 100}%`;
         cluster.style.top = `${Math.random() * 100}%`;
-        cluster.style.opacity = 0.3 + Math.random() * 0.4;
+        cluster.style.opacity = 0.2;
         spaceBackground.appendChild(cluster);
     }
 
-    // Create enhanced shooting stars
-    for (let i = 0; i < 3; i++) {
-        const shootingStar = document.createElement('div');
-        shootingStar.className = 'shooting-star';
-        shootingStar.style.top = `${Math.random() * 100}%`;
-        shootingStar.style.left = `${Math.random() * 100}%`;
-        shootingStar.style.animationDelay = `${Math.random() * 15}s`;
-        shootingStar.style.animationDuration = `${4 + Math.random() * 4}s`;
-        spaceBackground.appendChild(shootingStar);
-    }
+    // Reduce number of shooting stars
+    const shootingStar = document.createElement('div');
+    shootingStar.className = 'shooting-star';
+    shootingStar.style.top = `${Math.random() * 100}%`;
+    shootingStar.style.left = `${Math.random() * 100}%`;
+    shootingStar.style.animationDelay = `${Math.random() * 10}s`;
+    spaceBackground.appendChild(shootingStar);
 
-    // Create enhanced stars with varying sizes and twinkle speeds
-    for (let i = 0; i < 200; i++) {
+    // Reduce number of stars and simplify their styling
+    const starCount = 100; // Reduced from 200
+    for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = `${Math.random() * 100}%`;
         star.style.top = `${Math.random() * 100}%`;
-        
-        // Enhanced size variation
-        const size = Math.random() * 2 + 1;
+        const size = Math.random() * 1.5 + 0.5; // Reduced size range
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
         
-        // Enhanced twinkling animation
-        star.style.animation = `twinkle ${Math.random() * 4 + 3}s cubic-bezier(0.4, 0, 0.6, 1) infinite ${Math.random() * 2}s`;
+        // Simplified animation with longer duration
+        star.style.animation = `twinkle ${Math.random() * 3 + 4}s ease-in-out infinite ${Math.random() * 2}s`;
         
-        // Enhanced glow effect
-        const glowIntensity = 0.3 + Math.random() * 0.4;
-        star.style.boxShadow = `
-            0 0 ${size}px rgba(255, 255, 255, ${glowIntensity}),
-            0 0 ${size * 2}px rgba(255, 255, 255, ${glowIntensity * 0.5})
-        `;
+        // Simplified glow effect
+        star.style.boxShadow = `0 0 ${size}px rgba(255, 255, 255, 0.3)`;
         
         spaceBackground.appendChild(star);
     }
 
-    // Enhanced celestial bodies with improved appearances
+    // Reduce number of planets and simplify their effects
     const celestialBodies = [
         { 
             name: 'sun', 
-            color: 'radial-gradient(circle at 30% 30%, #fff7b5, #ffd700 60%, #ff8c00)',
-            size: 80,
+            color: 'radial-gradient(circle at 30% 30%, #fff7b5, #ffd700)',
+            size: 60,
             left: '10%',
-            top: '20%',
-            animation: 'float 8s ease-in-out infinite',
-            glow: true,
-            atmosphere: true
-        },
-        { 
-            name: 'mercury',
-            color: 'linear-gradient(135deg, #8a8a8a, #4a4a4a, #2a2a2a)',
-            size: 15,
-            left: '25%',
-            top: '15%',
-            animation: 'float 6s ease-in-out infinite',
-            atmosphere: true
-        },
-        { 
-            name: 'venus',
-            color: 'linear-gradient(135deg, #d4a017, #8b6913, #654321)',
-            size: 25,
-            left: '40%',
-            top: '25%',
-            animation: 'float 7s ease-in-out infinite',
-            atmosphere: true
+            top: '20%'
         },
         { 
             name: 'earth',
-            color: 'linear-gradient(135deg, #4b9cd3, #1a5c8b, #0a2c4b)',
-            size: 30,
+            color: 'linear-gradient(135deg, #4b9cd3, #1a5c8b)',
+            size: 25,
             left: '60%',
-            top: '30%',
-            animation: 'float 9s ease-in-out infinite',
-            atmosphere: true,
-            clouds: true
-        },
-        { 
-            name: 'mars',
-            color: 'linear-gradient(135deg, #cd5c5c, #8b3e3e, #4b1e1e)',
-            size: 20,
-            left: '75%',
-            top: '20%',
-            animation: 'float 8s ease-in-out infinite',
-            atmosphere: true
-        },
-        {
-            name: 'jupiter',
-            color: 'linear-gradient(135deg, #deb887, #b38b59, #8b6914)',
-            size: 60,
-            left: '85%',
-            top: '40%',
-            animation: 'float 12s ease-in-out infinite',
-            atmosphere: true,
-            stripes: true
+            top: '30%'
         },
         {
             name: 'saturn',
-            color: 'linear-gradient(135deg, #ffd700, #b39700, #806b00)',
-            size: 50,
+            color: 'linear-gradient(135deg, #ffd700, #b39700)',
+            size: 40,
             left: '30%',
-            top: '60%',
-            animation: 'float 11s ease-in-out infinite',
-            atmosphere: true,
-            rings: true
+            top: '60%'
         }
     ];
 
@@ -802,59 +749,41 @@ function createSpaceBackground() {
         planet.style.background = body.color;
         planet.style.left = body.left;
         planet.style.top = body.top;
-        planet.style.animation = body.animation;
-        planet.style.opacity = '0.8';
+        planet.style.animation = 'float 10s ease-in-out infinite'; // Simplified animation
+        planet.style.opacity = '0.7';
         
-        // Enhanced shadow and lighting effects
-        planet.style.boxShadow = `
-            inset -${body.size * 0.1}px -${body.size * 0.1}px ${body.size * 0.2}px rgba(0, 0, 0, 0.5),
-            inset ${body.size * 0.1}px ${body.size * 0.1}px ${body.size * 0.2}px rgba(255, 255, 255, 0.1)
-            ${body.glow ? `, 0 0 ${body.size}px rgba(255, 215, 0, 0.3)` : ''}
-        `;
-
-        if (body.atmosphere) {
-            const atmosphere = document.createElement('div');
-            atmosphere.className = 'planet-atmosphere';
-            atmosphere.style.background = `radial-gradient(circle at 30% 30%, 
-                rgba(255, 255, 255, 0.2),
-                rgba(255, 255, 255, 0.1) 30%,
-                transparent 70%)`;
-            planet.appendChild(atmosphere);
-        }
-
-        if (body.rings) {
-            const rings = document.createElement('div');
-            rings.className = 'saturn-rings';
-            planet.appendChild(rings);
-        }
-
-        if (body.stripes) {
-            const stripes = document.createElement('div');
-            stripes.style.position = 'absolute';
-            stripes.style.width = '100%';
-            stripes.style.height = '100%';
-            stripes.style.background = 'repeating-linear-gradient(0deg, transparent, transparent 10%, rgba(255,255,255,0.1) 12%, transparent 14%)';
-            stripes.style.borderRadius = '50%';
-            stripes.style.animation = 'planetRotate 20s linear infinite';
-            planet.appendChild(stripes);
-        }
-
-        if (body.clouds) {
-            const clouds = document.createElement('div');
-            clouds.style.position = 'absolute';
-            clouds.style.width = '100%';
-            clouds.style.height = '100%';
-            clouds.style.background = `
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(255,255,255,0.2) 0%, transparent 40%)
-            `;
-            clouds.style.borderRadius = '50%';
-            clouds.style.animation = 'planetRotate 30s linear infinite';
-            planet.appendChild(clouds);
-        }
-
+        // Simplified shadow
+        planet.style.boxShadow = 'inset -4px -4px 8px rgba(0, 0, 0, 0.5)';
+        
         spaceBackground.appendChild(planet);
     });
+
+    // Optimize scroll performance
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset;
+                const stars = document.querySelectorAll('.star');
+                const planets = document.querySelectorAll('.planet');
+                
+                // Use transform3d for hardware acceleration
+                stars.forEach((star, index) => {
+                    if (index % 2 === 0) { // Only animate every other star
+                        star.style.transform = `translate3d(0, ${scrolled * 0.1}px, 0)`;
+                    }
+                });
+                
+                planets.forEach((planet, index) => {
+                    planet.style.transform = `translate3d(0, ${scrolled * 0.05}px, 0)`;
+                });
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
 
     // Add parallax effect
     window.addEventListener('scroll', () => {
