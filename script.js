@@ -783,7 +783,7 @@ function createSpaceBackground() {
             ticking = true;
         }
     });
-}
+
 
     // Add parallax effect
     window.addEventListener('scroll', () => {
@@ -802,7 +802,6 @@ function createSpaceBackground() {
         });
     });
 }
-
 // Update display
 function updateDisplay() {
     const grouped = {
