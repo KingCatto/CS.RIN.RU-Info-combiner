@@ -13,20 +13,20 @@ let linuxColor = savedColors.linux;
 // Enhanced control states
 const controlStates = {
     windows: { 
-        public: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        win32: { dateEnabled: false, date: '', linkEnabled: false, link: '' }
+        public: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        win32: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' }
     },
     mac: {
-        public: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '' }
+        public: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' }
     },
     linux: {
-        public: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '' },
-        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '' }
+        public: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
+        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' }
     }
 };
 
@@ -120,6 +120,34 @@ function initializePlatformBranchControls(platform, branch) {
         dateInput.addEventListener('input', function() {
             controlStates[platform][branch].date = formatDate(this.value);
             this.value = controlStates[platform][branch].date;
+            updateDisplay();
+            saveControlStates();
+        });
+
+        // Add experimental input
+        const experimentalInput = document.createElement('input');
+        experimentalInput.type = 'text';
+        experimentalInput.id = `${platform}${branch.charAt(0).toUpperCase() + branch.slice(1)}ExperimentalInput`;
+        experimentalInput.className = 'date-input';
+        experimentalInput.placeholder = 'Enter experimental build name (optional)';
+        
+        // Create experimental container
+        const experimentalContainer = document.createElement('div');
+        experimentalContainer.className = 'date-input-container';
+        experimentalContainer.id = `${platform}${branch.charAt(0).toUpperCase() + branch.slice(1)}ExperimentalContainer`;
+        experimentalContainer.appendChild(experimentalInput);
+        dateContainer.parentNode.insertBefore(experimentalContainer, dateContainer.nextSibling);
+
+        // Set initial state for experimental input
+        experimentalInput.value = controlStates[platform][branch].experimental || '';
+        experimentalContainer.style.display = controlStates[platform][branch].dateEnabled ? 'block' : 'none';
+
+        dateToggle.addEventListener('change', function() {
+            experimentalContainer.style.display = this.checked ? 'block' : 'none';
+        });
+
+        experimentalInput.addEventListener('input', function() {
+            controlStates[platform][branch].experimental = this.value;
             updateDisplay();
             saveControlStates();
         });
@@ -249,6 +277,23 @@ function initializeButtons() {
     if (downloadBtn) downloadBtn.addEventListener('click', downloadOutput);
     if (clearBtn) clearBtn.addEventListener('click', clearAll);
 }
+
+// Handle file uploads
+function handleFiles(newFiles) {
+    for (let file of newFiles) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            files.push({
+                name: file.name,
+                content: e.target.result
+            });
+            updateDisplay();
+            updateBranchControls();
+        };
+        reader.readAsText(file);
+    }
+}
+
 
 // Handle file uploads
 function handleFiles(newFiles) {
@@ -589,11 +634,12 @@ function updateFileContent(content, platform, branch = 'public') {
         if (win32State.dateEnabled && win32State.date) {
             const buildMatch = content.match(/\[Build\s+(\d+)\]/);
             const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
+            const experimental = win32State.experimental ? ` (${win32State.experimental})` : '';
             
             updatedContent = updatedContent.replace(/\s*\[Build\s+\d+\]/g, '');
             updatedContent = updatedContent.replace(
                 /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
-                `$1[i]${win32State.date}${buildNumber}[/i]`
+                `$1[i]${win32State.date}${experimental}${buildNumber}[/i]`
             );
             updatedContent = updatedContent.replace(
                 /(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
@@ -626,11 +672,12 @@ function updateFileContent(content, platform, branch = 'public') {
     if (state.dateEnabled && state.date) {
         const buildMatch = content.match(/\[Build\s+(\d+)\]/);
         const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
+        const experimental = state.experimental ? ` (${state.experimental})` : '';
         
         updatedContent = updatedContent.replace(/\s*\[Build\s+\d+\]/g, '');
         updatedContent = updatedContent.replace(
             /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
-            `$1[i]${state.date}${buildNumber}[/i]`
+            `$1[i]${state.date}${experimental}${buildNumber}[/i]`
         );
         updatedContent = updatedContent.replace(
             /(\[color=white\]\[b\]Uploaded version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
@@ -866,7 +913,8 @@ function clearAll() {
                 dateEnabled: false,
                 date: '',
                 linkEnabled: false,
-                link: ''
+                link: '',
+                experimental: ''
             };
         });
     });
