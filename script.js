@@ -29,6 +29,7 @@ const controlStates = {
         unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '' }
     }
 };
+
 const storedStates = localStorage.getItem('controlToggles');
 if (storedStates) {
     const savedStates = JSON.parse(storedStates);
@@ -41,6 +42,7 @@ if (storedStates) {
         });
     });
 }
+
 // Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function() {
     initializeColorPickers();
@@ -67,6 +69,7 @@ function initializeColorPickers() {
         }
     });
 }
+
 function saveControlStates() {
     localStorage.setItem('controlToggles', JSON.stringify(controlStates));
 }
@@ -79,7 +82,6 @@ function saveColorPreferences() {
         linux: linuxColor
     }));
 }
-
 // Initialize controls for each platform and branch
 function initializeControls() {
     const platforms = ['windows', 'mac', 'linux'];
@@ -150,7 +152,7 @@ function initializePlatformBranchControls(platform, branch) {
     }
 }
 
-// Update initializeWin32Controls function similarly
+// Initialize Win32 controls
 function initializeWin32Controls() {
     const dateToggle = document.getElementById('windows32DateToggle');
     const dateContainer = document.getElementById('windows32DateContainer');
@@ -263,7 +265,6 @@ function handleFiles(newFiles) {
         reader.readAsText(file);
     }
 }
-
 // Get the local timezone offset in minutes
 let userTimezoneOffset = new Date().getTimezoneOffset();
 
@@ -653,7 +654,6 @@ function extractBranch(content) {
     return branchMatch && branchMatch[1] !== 'Public' ? ` [${branchMatch[1]}]` : '';
 }
 
-
 // Detect platform from filename
 function detectPlatform(filename) {
     if (filename.includes('.Linux64.')) return 'linux';
@@ -663,144 +663,6 @@ function detectPlatform(filename) {
     if (filename.includes('.Win64.')) return 'windows';
     if (filename.includes('.Windows.')) return 'windows';
     return 'windows';
-}
-
-// Optimized createSpaceBackground function
-function createSpaceBackground() {
-    const spaceBackground = document.createElement('div');
-    spaceBackground.id = 'space-background';
-    document.body.prepend(spaceBackground);
-
-    // Add reduced nebula effect with lower opacity and fewer gradients
-    const nebula = document.createElement('div');
-    nebula.className = 'nebula';
-    spaceBackground.appendChild(nebula);
-
-    // Reduce number of star clusters
-    for (let i = 0; i < 3; i++) {
-        const cluster = document.createElement('div');
-        cluster.className = 'star-cluster';
-        cluster.style.width = `${Math.random() * 150 + 100}px`;
-        cluster.style.height = cluster.style.width;
-        cluster.style.left = `${Math.random() * 100}%`;
-        cluster.style.top = `${Math.random() * 100}%`;
-        cluster.style.opacity = 0.2;
-        spaceBackground.appendChild(cluster);
-    }
-
-    // Reduce number of shooting stars
-    const shootingStar = document.createElement('div');
-    shootingStar.className = 'shooting-star';
-    shootingStar.style.top = `${Math.random() * 100}%`;
-    shootingStar.style.left = `${Math.random() * 100}%`;
-    shootingStar.style.animationDelay = `${Math.random() * 10}s`;
-    spaceBackground.appendChild(shootingStar);
-
-    // Reduce number of stars and simplify their styling
-    const starCount = 100; // Reduced from 200
-    for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        const size = Math.random() * 1.5 + 0.5; // Reduced size range
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-        
-        // Simplified animation with longer duration
-        star.style.animation = `twinkle ${Math.random() * 3 + 4}s ease-in-out infinite ${Math.random() * 2}s`;
-        
-        // Simplified glow effect
-        star.style.boxShadow = `0 0 ${size}px rgba(255, 255, 255, 0.3)`;
-        
-        spaceBackground.appendChild(star);
-    }
-
-    // Reduce number of planets and simplify their effects
-    const celestialBodies = [
-        { 
-            name: 'sun', 
-            color: 'radial-gradient(circle at 30% 30%, #fff7b5, #ffd700)',
-            size: 60,
-            left: '10%',
-            top: '20%'
-        },
-        { 
-            name: 'earth',
-            color: 'linear-gradient(135deg, #4b9cd3, #1a5c8b)',
-            size: 25,
-            left: '60%',
-            top: '30%'
-        },
-        {
-            name: 'saturn',
-            color: 'linear-gradient(135deg, #ffd700, #b39700)',
-            size: 40,
-            left: '30%',
-            top: '60%'
-        }
-    ];
-
-    celestialBodies.forEach(body => {
-        const planet = document.createElement('div');
-        planet.className = 'planet';
-        planet.style.width = `${body.size}px`;
-        planet.style.height = `${body.size}px`;
-        planet.style.background = body.color;
-        planet.style.left = body.left;
-        planet.style.top = body.top;
-        planet.style.animation = 'float 10s ease-in-out infinite'; // Simplified animation
-        planet.style.opacity = '0.7';
-        
-        // Simplified shadow
-        planet.style.boxShadow = 'inset -4px -4px 8px rgba(0, 0, 0, 0.5)';
-        
-        spaceBackground.appendChild(planet);
-    });
-
-    // Optimize scroll performance
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                const scrolled = window.pageYOffset;
-                const stars = document.querySelectorAll('.star');
-                const planets = document.querySelectorAll('.planet');
-                
-                // Use transform3d for hardware acceleration
-                stars.forEach((star, index) => {
-                    if (index % 2 === 0) { // Only animate every other star
-                        star.style.transform = `translate3d(0, ${scrolled * 0.1}px, 0)`;
-                    }
-                });
-                
-                planets.forEach((planet, index) => {
-                    planet.style.transform = `translate3d(0, ${scrolled * 0.05}px, 0)`;
-                });
-                
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
-
-
-    // Add parallax effect
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const stars = document.querySelectorAll('.star');
-        const planets = document.querySelectorAll('.planet');
-        
-        stars.forEach((star, index) => {
-            const speed = index % 3 === 0 ? 0.3 : index % 2 === 0 ? 0.2 : 0.1;
-            star.style.transform = `translateY(${scrolled * speed}px)`;
-        });
-        
-        planets.forEach((planet, index) => {
-            const speed = 0.05 + (index * 0.02);
-            planet.style.transform = `translateY(${scrolled * speed}px)`;
-        });
-    });
 }
 // Update display
 function updateDisplay() {
@@ -993,7 +855,6 @@ function generateFileName() {
     
     return baseName + '.txt';
 }
-
 // Clear all data also clear localStorage
 function clearAll() {
     files.length = 0;
@@ -1055,4 +916,124 @@ function showToast(message) {
     toast.textContent = message;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+// Create space background
+function createSpaceBackground() {
+    const spaceBackground = document.createElement('div');
+    spaceBackground.id = 'space-background';
+    document.body.prepend(spaceBackground);
+
+    // Add reduced nebula effect with lower opacity and fewer gradients
+    const nebula = document.createElement('div');
+    nebula.className = 'nebula';
+    spaceBackground.appendChild(nebula);
+
+    // Reduce number of star clusters
+    for (let i = 0; i < 3; i++) {
+        const cluster = document.createElement('div');
+        cluster.className = 'star-cluster';
+        cluster.style.width = `${Math.random() * 150 + 100}px`;
+        cluster.style.height = cluster.style.width;
+        cluster.style.left = `${Math.random() * 100}%`;
+        cluster.style.top = `${Math.random() * 100}%`;
+        cluster.style.opacity = 0.2;
+        spaceBackground.appendChild(cluster);
+    }
+
+    // Reduce number of shooting stars
+    const shootingStar = document.createElement('div');
+    shootingStar.className = 'shooting-star';
+    shootingStar.style.top = `${Math.random() * 100}%`;
+    shootingStar.style.left = `${Math.random() * 100}%`;
+    shootingStar.style.animationDelay = `${Math.random() * 10}s`;
+    spaceBackground.appendChild(shootingStar);
+
+    // Reduce number of stars and simplify their styling
+    const starCount = 100; // Reduced from 200
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        const size = Math.random() * 1.5 + 0.5; // Reduced size range
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // Simplified animation with longer duration
+        star.style.animation = `twinkle ${Math.random() * 3 + 4}s ease-in-out infinite ${Math.random() * 2}s`;
+        
+        // Simplified glow effect
+        star.style.boxShadow = `0 0 ${size}px rgba(255, 255, 255, 0.3)`;
+        
+        spaceBackground.appendChild(star);
+    }
+
+    // Reduce number of planets and simplify their effects
+    const celestialBodies = [
+        { 
+            name: 'sun', 
+            color: 'radial-gradient(circle at 30% 30%, #fff7b5, #ffd700)',
+            size: 60,
+            left: '10%',
+            top: '20%'
+        },
+        { 
+            name: 'earth',
+            color: 'linear-gradient(135deg, #4b9cd3, #1a5c8b)',
+            size: 25,
+            left: '60%',
+            top: '30%'
+        },
+        {
+            name: 'saturn',
+            color: 'linear-gradient(135deg, #ffd700, #b39700)',
+            size: 40,
+            left: '30%',
+            top: '60%'
+        }
+    ];
+
+    celestialBodies.forEach(body => {
+        const planet = document.createElement('div');
+        planet.className = 'planet';
+        planet.style.width = `${body.size}px`;
+        planet.style.height = `${body.size}px`;
+        planet.style.background = body.color;
+        planet.style.left = body.left;
+        planet.style.top = body.top;
+        planet.style.animation = 'float 10s ease-in-out infinite'; // Simplified animation
+        planet.style.opacity = '0.7';
+        
+        // Simplified shadow
+        planet.style.boxShadow = 'inset -4px -4px 8px rgba(0, 0, 0, 0.5)';
+        
+        spaceBackground.appendChild(planet);
+    });
+
+    // Optimize scroll performance
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset;
+                const stars = document.querySelectorAll('.star');
+                const planets = document.querySelectorAll('.planet');
+                
+                // Use transform3d for hardware acceleration
+                stars.forEach((star, index) => {
+                    if (index % 2 === 0) { // Only animate every other star
+                        star.style.transform = `translate3d(0, ${scrolled * 0.1}px, 0)`;
+                    }
+                });
+                
+                planets.forEach((planet, index) => {
+                    planet.style.transform = `translate3d(0, ${scrolled * 0.05}px, 0)`;
+                });
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
 }
