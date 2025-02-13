@@ -753,3 +753,18 @@ button.success {
     from { transform: translate(-50%, -50%) rotate(-20deg); }
     to { transform: translate(-50%, -50%) rotate(340deg); }
 }
+.experimental-input {
+    margin-top: 0.5rem;
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.experimental-input:focus {
+    border-color: var(--accent-color) !important;
+}
+
+.date-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
