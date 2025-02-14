@@ -4,38 +4,98 @@ let windowsColor = '#3b82f6';
 let macColor = '#FC5232';
 let linuxColor = '#10b981';
 
-// Try to load saved colors right at startup
-try {
-    const saved = localStorage.getItem('colorPreferences');
-    if (saved) {
-        const colors = JSON.parse(saved);
-        windowsColor = colors.windows || windowsColor;
-        macColor = colors.mac || macColor;
-        linuxColor = colors.linux || linuxColor;
-        console.log('Loaded colors:', colors); // Debug log
+// Define saveColors function before it's used
+function saveColors() {
+    try {
+        const colors = {
+            windows: windowsColor,
+            mac: macColor,
+            linux: linuxColor
+        };
+        localStorage.setItem('colorPreferences', JSON.stringify(colors));
+        console.log('Saved colors:', colors); // Debug log
+    } catch (e) {
+        console.error('Error saving colors:', e);
     }
-} catch (e) {
-    console.error('Error loading saved colors:', e);
 }
-
 
 // Enhanced control states
 const controlStates = {
-    windows: { 
-        public: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        win32: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' }
+    windows: {
+        public: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        beta: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        unstable: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        win32: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        }
     },
     mac: {
-        public: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' }
+        public: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        beta: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        unstable: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        }
     },
     linux: {
-        public: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        beta: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' },
-        unstable: { dateEnabled: false, date: '', linkEnabled: false, link: '', experimental: '' }
+        public: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        beta: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        },
+        unstable: {
+            dateEnabled: false,
+            date: '',
+            linkEnabled: false,
+            link: '',
+            experimental: ''
+        }
     }
 };
 
@@ -53,7 +113,7 @@ if (storedStates) {
 }
 
 // Initialize everything when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeColorPickers();
     initializeControls();
     initializeDropzone();
@@ -61,27 +121,25 @@ document.addEventListener('DOMContentLoaded', function() {
     createSpaceBackground();
 });
 
-// Simplified color picker initialization
+// Initialize color pickers
 function initializeColorPickers() {
-    // Set initial values
     document.getElementById('windowsColorPicker').value = windowsColor;
     document.getElementById('macColorPicker').value = macColor;
     document.getElementById('linuxColorPicker').value = linuxColor;
 
-    // Add event listeners
-    document.getElementById('windowsColorPicker').addEventListener('change', function(e) {
+    document.getElementById('windowsColorPicker').addEventListener('change', function (e) {
         windowsColor = e.target.value;
         saveColors();
         updateDisplay();
     });
 
-    document.getElementById('macColorPicker').addEventListener('change', function(e) {
+    document.getElementById('macColorPicker').addEventListener('change', function (e) {
         macColor = e.target.value;
         saveColors();
         updateDisplay();
     });
 
-    document.getElementById('linuxColorPicker').addEventListener('change', function(e) {
+    document.getElementById('linuxColorPicker').addEventListener('change', function (e) {
         linuxColor = e.target.value;
         saveColors();
         updateDisplay();
@@ -92,16 +150,6 @@ function saveControlStates() {
     localStorage.setItem('controlToggles', JSON.stringify(controlStates));
 }
 
-
-// Save color preferences
-function saveColorPreferences() {
-    const preferences = {
-        windows: windowsColor,
-        mac: macColor,
-        linux: linuxColor
-    };
-    localStorage.setItem('colorPreferences', JSON.stringify(preferences));
-}
 // Initialize controls for each platform and branch
 function initializeControls() {
     const platforms = ['windows', 'mac', 'linux'];
@@ -129,7 +177,7 @@ function initializePlatformBranchControls(platform, branch) {
         dateContainer.style.display = controlStates[platform][branch].dateEnabled ? 'block' : 'none';
         dateInput.value = controlStates[platform][branch].date;
 
-        dateToggle.addEventListener('change', function() {
+        dateToggle.addEventListener('change', function () {
             controlStates[platform][branch].dateEnabled = this.checked;
             dateContainer.style.display = this.checked ? 'block' : 'none';
             if (this.checked) dateInput.focus();
@@ -137,7 +185,7 @@ function initializePlatformBranchControls(platform, branch) {
             saveControlStates();
         });
 
-        dateInput.addEventListener('input', function() {
+        dateInput.addEventListener('input', function () {
             controlStates[platform][branch].date = formatDate(this.value);
             this.value = controlStates[platform][branch].date;
             updateDisplay();
@@ -145,32 +193,21 @@ function initializePlatformBranchControls(platform, branch) {
         });
 
         // Add experimental input
-        const experimentalInput = document.createElement('input');
-        experimentalInput.type = 'text';
-        experimentalInput.id = `${platform}${branch.charAt(0).toUpperCase() + branch.slice(1)}ExperimentalInput`;
-        experimentalInput.className = 'date-input';
-        experimentalInput.placeholder = 'Enter experimental build name (optional)';
-        
-        // Create experimental container
-        const experimentalContainer = document.createElement('div');
-        experimentalContainer.className = 'date-input-container';
-        experimentalContainer.id = `${platform}${branch.charAt(0).toUpperCase() + branch.slice(1)}ExperimentalContainer`;
-        experimentalContainer.appendChild(experimentalInput);
-        dateContainer.parentNode.insertBefore(experimentalContainer, dateContainer.nextSibling);
+        const experimentalInput = document.getElementById(`${platform}${branch.charAt(0).toUpperCase() + branch.slice(1)}ExperimentalInput`);
+        if (experimentalInput) {
+            experimentalInput.value = controlStates[platform][branch].experimental || '';
+            experimentalInput.style.display = controlStates[platform][branch].dateEnabled ? 'block' : 'none';
 
-        // Set initial state for experimental input
-        experimentalInput.value = controlStates[platform][branch].experimental || '';
-        experimentalContainer.style.display = controlStates[platform][branch].dateEnabled ? 'block' : 'none';
+            experimentalInput.addEventListener('input', function () {
+                controlStates[platform][branch].experimental = this.value;
+                updateDisplay();
+                saveControlStates();
+            });
 
-        dateToggle.addEventListener('change', function() {
-            experimentalContainer.style.display = this.checked ? 'block' : 'none';
-        });
-
-        experimentalInput.addEventListener('input', function() {
-            controlStates[platform][branch].experimental = this.value;
-            updateDisplay();
-            saveControlStates();
-        });
+            dateToggle.addEventListener('change', function () {
+                experimentalInput.style.display = this.checked ? 'block' : 'none';
+            });
+        }
     }
 
     // Initialize link toggle
@@ -184,7 +221,7 @@ function initializePlatformBranchControls(platform, branch) {
         linkContainer.style.display = controlStates[platform][branch].linkEnabled ? 'block' : 'none';
         linkInput.value = controlStates[platform][branch].link;
 
-        linkToggle.addEventListener('change', function() {
+        linkToggle.addEventListener('change', function () {
             controlStates[platform][branch].linkEnabled = this.checked;
             linkContainer.style.display = this.checked ? 'block' : 'none';
             if (this.checked) linkInput.focus();
@@ -192,7 +229,7 @@ function initializePlatformBranchControls(platform, branch) {
             saveControlStates();
         });
 
-        linkInput.addEventListener('input', function() {
+        linkInput.addEventListener('input', function () {
             controlStates[platform][branch].link = this.value;
             updateDisplay();
             saveControlStates();
@@ -215,7 +252,7 @@ function initializeWin32Controls() {
         dateContainer.style.display = controlStates.windows.win32.dateEnabled ? 'block' : 'none';
         dateInput.value = controlStates.windows.win32.date;
 
-        dateToggle.addEventListener('change', function() {
+        dateToggle.addEventListener('change', function () {
             controlStates.windows.win32.dateEnabled = this.checked;
             dateContainer.style.display = this.checked ? 'block' : 'none';
             if (this.checked) dateInput.focus();
@@ -223,7 +260,7 @@ function initializeWin32Controls() {
             saveControlStates();
         });
 
-        dateInput.addEventListener('input', function() {
+        dateInput.addEventListener('input', function () {
             controlStates.windows.win32.date = formatDate(this.value);
             this.value = controlStates.windows.win32.date;
             updateDisplay();
@@ -237,7 +274,7 @@ function initializeWin32Controls() {
         linkContainer.style.display = controlStates.windows.win32.linkEnabled ? 'block' : 'none';
         linkInput.value = controlStates.windows.win32.link;
 
-        linkToggle.addEventListener('change', function() {
+        linkToggle.addEventListener('change', function () {
             controlStates.windows.win32.linkEnabled = this.checked;
             linkContainer.style.display = this.checked ? 'block' : 'none';
             if (this.checked) linkInput.focus();
@@ -245,7 +282,7 @@ function initializeWin32Controls() {
             saveControlStates();
         });
 
-        linkInput.addEventListener('input', function() {
+        linkInput.addEventListener('input', function () {
             controlStates.windows.win32.link = this.value;
             updateDisplay();
             saveControlStates();
@@ -256,30 +293,30 @@ function initializeWin32Controls() {
 // Initialize dropzone
 function initializeDropzone() {
     const dropzone = document.getElementById('dropzone');
-    
+
     if (dropzone) {
-        dropzone.onclick = function() {
+        dropzone.onclick = function () {
             const input = document.createElement('input');
             input.type = 'file';
             input.multiple = true;
             input.accept = '.txt';
-            input.onchange = function() {
+            input.onchange = function () {
                 handleFiles(this.files);
             };
             input.click();
         };
 
-        dropzone.ondragover = function(e) {
+        dropzone.ondragover = function (e) {
             e.preventDefault();
             this.classList.add('dragover');
         };
 
-        dropzone.ondragleave = function(e) {
+        dropzone.ondragleave = function (e) {
             e.preventDefault();
             this.classList.remove('dragover');
         };
 
-        dropzone.ondrop = function(e) {
+        dropzone.ondrop = function (e) {
             e.preventDefault();
             this.classList.remove('dragover');
             handleFiles(e.dataTransfer.files);
@@ -302,7 +339,7 @@ function initializeButtons() {
 function handleFiles(newFiles) {
     for (let file of newFiles) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             files.push({
                 name: file.name,
                 content: e.target.result
@@ -314,22 +351,6 @@ function handleFiles(newFiles) {
     }
 }
 
-
-// Handle file uploads
-function handleFiles(newFiles) {
-    for (let file of newFiles) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            files.push({
-                name: file.name,
-                content: e.target.result
-            });
-            updateDisplay();
-            updateBranchControls();
-        };
-        reader.readAsText(file);
-    }
-}
 // Get the local timezone offset in minutes
 let userTimezoneOffset = new Date().getTimezoneOffset();
 
@@ -338,41 +359,40 @@ function formatDate(dateStr) {
     try {
         // Clean up the input string
         const cleanStr = dateStr.trim()
-            .replace(/[–—]/g, '-')  // Normalize dashes
-            .replace(/\s+/g, ' ')   // Normalize spaces
+            .replace(/[–—]/g, '-') // Normalize dashes
+            .replace(/\s+/g, ' ') // Normalize spaces
             .toLowerCase();
 
         // Check for the specific format: "Dec 17, 2024, 08:56:22 AM"
         const localTimePattern = /^([a-z]+)\s+(\d{1,2}),\s*(\d{4}),\s*(\d{1,2}):(\d{1,2}):(\d{1,2})\s*(am|pm)/i;
         const timeMatch = cleanStr.match(localTimePattern);
-        
+
         if (timeMatch) {
             const [_, monthStr, day, year, hours, minutes, seconds, ampm] = timeMatch;
             const months = ['january', 'february', 'march', 'april', 'may', 'june',
-                          'july', 'august', 'september', 'october', 'november', 'december'];
-            
+                'july', 'august', 'september', 'october', 'november', 'december'
+            ];
+
             // Convert month name to index (0-11)
             const month = months.findIndex(m => m.startsWith(monthStr.toLowerCase()));
-            
+
             // Convert hours to 24-hour format first
             let hour = parseInt(hours);
             if (ampm.toLowerCase() === 'pm' && hour !== 12) hour += 12;
             if (ampm.toLowerCase() === 'am' && hour === 12) hour = 0;
 
             // Create date in UTC accounting for user's timezone
-            // getTimezoneOffset() returns minutes, and is opposite of what you might expect
-            // e.g., EST is 300, so we subtract it (add the negative) to convert to UTC
             const offsetHours = -userTimezoneOffset / 60;
-            
+
             const utcDate = new Date(Date.UTC(
                 parseInt(year),
                 month,
                 parseInt(day),
-                hour + offsetHours, // Add the offset to convert from local to UTC
+                hour + offsetHours,
                 parseInt(minutes),
                 parseInt(seconds)
             ));
-            
+
             return `${months[utcDate.getUTCMonth()].charAt(0).toUpperCase() + 
                     months[utcDate.getUTCMonth()].slice(1)} ${utcDate.getUTCDate()}, ${
                     utcDate.getUTCFullYear()} - ${
@@ -394,31 +414,25 @@ function formatDate(dateStr) {
         // Try parsing with built-in Date
         // Remove timezone info temporarily for consistent parsing
         const withoutTZ = cleanStr.replace(/\s*(?:utc|gmt|[+-]\d{1,4}|[a-z]{3,4})$/i, '');
-        
+
         // Try multiple date formats
         const attempts = [
-            // Original string
-            cleanStr,
-            // Try with UTC explicitly
-            cleanStr + ' UTC',
-            // Try different separators
-            withoutTZ.replace(/[\/-]/g, '.'),
-            withoutTZ.replace(/[\.-]/g, '/'),
-            withoutTZ.replace(/[\.\/]/g, '-'),
-            // Try with and without time
-            withoutTZ.split(/\s+\d{1,2}:/)[0],
-            // Try different year positions
-            withoutTZ.replace(/(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/, '$3/$2/$1'),
-            // Try month name variants
-            ...tryMonthVariants(withoutTZ)
+            cleanStr, // Original cleaned string
+            cleanStr + ' UTC', // Try with UTC explicitly added
+            withoutTZ.replace(/[\/-]/g, '.'), // Replace slashes/hyphens with dots
+            withoutTZ.replace(/[\.-]/g, '/'), // Replace dots/hyphens with slashes
+            withoutTZ.replace(/[\.\/]/g, '-'), // Replace dots/slashes with hyphens
+            withoutTZ.split(/\s+\d{1,2}:/)[0], // Try just the date part before time
+            withoutTZ.replace(/(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/, '$3/$2/$1'), // Try swapping date parts
+            ...tryMonthVariants(withoutTZ) // Try different month name formats
         ];
 
         for (let attempt of attempts) {
             date = new Date(attempt);
             if (isValidDate(date)) {
                 // If no timezone was specified in original input, treat as UTC
-                if (!dateStr.toLowerCase().includes('utc') && 
-                    !dateStr.match(/[+-]\d{1,4}$/) && 
+                if (!dateStr.toLowerCase().includes('utc') &&
+                    !dateStr.match(/[+-]\d{1,4}$/) &&
                     !dateStr.match(/[a-z]{3,4}$/i)) {
                     date = new Date(Date.UTC(
                         date.getFullYear(),
@@ -432,18 +446,12 @@ function formatDate(dateStr) {
                 return formatToUTC(date);
             }
         }
-
         // If all attempts fail, try manual parsing
         const patterns = [
-            // 10 January 2025 - 01:26:40
             /^(\d{1,2})\s*([a-z]+)\s*(\d{4})\s*[-–—]?\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
-            // January 10, 2025 - 01:26:40
             /^([a-z]+)\s*(\d{1,2}),?\s*(\d{4})\s*[-–—]?\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
-            // 1/10/25 10:04:44 or 1-10-25 10:04:44
             /^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
-            // 2025/10/1 10:04:44 or 2025-10-1 10:04:44
             /^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})\s*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?/i,
-            // 10:04:44 1/10/25
             /^(\d{1,2}):(\d{1,2}):(\d{1,2})\s*(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/i
         ];
 
@@ -476,11 +484,11 @@ function formatToUTC(date) {
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    
+
     return `${months[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()} - ${
-        String(date.getUTCHours()).padStart(2, '0')}:${
-        String(date.getUTCMinutes()).padStart(2, '0')}:${
-        String(date.getUTCSeconds()).padStart(2, '0')} UTC`;
+                String(date.getUTCHours()).padStart(2, '0')}:${
+                String(date.getUTCMinutes()).padStart(2, '0')}:${
+                String(date.getUTCSeconds()).padStart(2, '0')} UTC`;
 }
 
 // Helper function to try different month name variants
@@ -514,30 +522,26 @@ function tryMonthVariants(dateStr) {
 
 // Helper function to create date from pattern matches
 function createDateFromParts(pattern, parts) {
-    let year, month, day, hours = 0, minutes = 0, seconds = 0;
+    let year, month, day, hours = 0,
+        minutes = 0,
+        seconds = 0;
 
-    // Handle different pattern formats
     if (pattern.source.startsWith('^\\d{1,2}\\s*[a-z]+')) {
-        // 10 January 2025 format
         [day, , year, hours, minutes, seconds] = parts;
         month = getMonthIndex(parts[1]);
     } else if (pattern.source.startsWith('^[a-z]+')) {
-        // January 10, 2025 format
         [, day, year, hours, minutes, seconds] = parts;
         month = getMonthIndex(parts[0]);
     } else if (pattern.source.startsWith('^\\d{1,2}[-\\/.]')) {
-        // 1/10/25 format
         [month, day, year, hours, minutes, seconds] = parts;
-        month--; // Adjust month to 0-based index
+        month--;
         if (year < 100) year += 2000;
     } else if (pattern.source.startsWith('^\\d{4}[-\\/.]')) {
-        // 2025/10/1 format
         [year, month, day, hours, minutes, seconds] = parts;
-        month--; // Adjust month to 0-based index
+        month--;
     } else if (pattern.source.startsWith('^\\d{1,2}:')) {
-        // 10:04:44 1/10/25 format
         [hours, minutes, seconds, month, day, year] = parts;
-        month--; // Adjust month to 0-based index
+        month--;
         if (year < 100) year += 2000;
     }
 
@@ -555,6 +559,7 @@ function getMonthIndex(monthStr) {
     if (index === -1) index = months.findIndex(m => m === monthName);
     return index;
 }
+
 // Update branch controls visibility
 function updateBranchControls() {
     const branches = new Set();
@@ -565,13 +570,11 @@ function updateBranchControls() {
     };
 
     files.forEach(file => {
-        // Extract branch information
         const branchMatch = file.content.match(/\[Branch:\s*([^\]]+)\]/);
         if (branchMatch) {
             const branch = branchMatch[1].toLowerCase();
             branches.add(branch);
 
-            // If this is a beta or unstable branch, record which platform it's for
             if (branch === 'beta' || branch === 'unstable') {
                 if (file.name.includes('Win32') || file.name.includes('Win64') || file.name.includes('Windows')) {
                     branchPlatforms[branch].add('windows');
@@ -583,7 +586,6 @@ function updateBranchControls() {
             }
         }
 
-        // Extract platform information
         if (file.name.includes('Win32')) {
             platforms.add('win32');
         } else if (file.name.includes('Windows') || file.name.includes('Win64')) {
@@ -595,29 +597,25 @@ function updateBranchControls() {
         }
     });
 
-    // Always ensure the public controls are visible
     const publicControls = document.querySelector('.public-branch-controls');
     if (publicControls) {
         publicControls.style.display = 'block';
     }
 
-    // Show/hide branch-specific controls and their platform controls
     document.querySelectorAll('.branch-specific-controls').forEach(control => {
         if (control.classList.contains('public-branch-controls')) {
-            return; // Skip public controls as they're always visible
+            return;
         }
 
         const branchClass = Array.from(control.classList)
             .find(cls => cls.endsWith('-branch-controls'));
-        
+
         if (branchClass) {
             const branchName = branchClass.replace('-branch-controls', '');
             const shouldShowBranch = branches.has(branchName);
             control.style.display = shouldShowBranch ? 'block' : 'none';
 
-            // If showing the branch, handle platform-specific controls
             if (shouldShowBranch) {
-                // Hide/show platform controls based on whether that platform exists for this branch
                 control.querySelectorAll('.control-group').forEach(platformControl => {
                     const isWindows = platformControl.querySelector('[id*="windows"]');
                     const isMac = platformControl.querySelector('[id*="mac"]');
@@ -635,7 +633,6 @@ function updateBranchControls() {
         }
     });
 
-    // Show/hide Win32 controls
     const win32Controls = document.querySelector('.win32-controls');
     if (win32Controls) {
         win32Controls.style.display = platforms.has('win32') ? 'block' : 'none';
@@ -647,15 +644,14 @@ function updateFileContent(content, platform, branch = 'public') {
     let updatedContent = content;
     const branchMatch = content.match(/\[Branch:\s*([^\]]+)\]/);
     const detectedBranch = branchMatch ? branchMatch[1].toLowerCase() : 'public';
-    
-    // Handle Win32 specifically
+
     if (platform === 'win32') {
         const win32State = controlStates.windows.win32;
         if (win32State.dateEnabled && win32State.date) {
             const buildMatch = content.match(/\[Build\s+(\d+)\]/);
             const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
             const experimental = win32State.experimental ? ` (${win32State.experimental})` : '';
-            
+
             updatedContent = updatedContent.replace(/\s*\[Build\s+\d+\]/g, '');
             updatedContent = updatedContent.replace(
                 /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
@@ -671,21 +667,18 @@ function updateFileContent(content, platform, branch = 'public') {
         }
         return updatedContent;
     }
-    
-    // Handle all other platforms including Win64
+
     let normalizedPlatform = platform.toLowerCase()
-        .replace(/64$/, '')  // Remove 64 suffix
-        .replace(/^win(?:dows)?/, 'windows');  // Normalize Win/Windows to windows
-    
-    // Check if we have a valid platform
+        .replace(/64$/, '')
+        .replace(/^win(?:dows)?/, 'windows');
+
     if (!controlStates[normalizedPlatform]) {
         console.warn(`Unknown platform: ${platform}, normalized: ${normalizedPlatform}`);
         return content;
     }
 
-    // Use the detected branch if it exists in controlStates, otherwise use 'public'
-    const state = controlStates[normalizedPlatform][detectedBranch] || 
-                 controlStates[normalizedPlatform]['public'];
+    const state = controlStates[normalizedPlatform][detectedBranch] ||
+        controlStates[normalizedPlatform]['public'];
 
     if (!state) return content;
 
@@ -693,7 +686,7 @@ function updateFileContent(content, platform, branch = 'public') {
         const buildMatch = content.match(/\[Build\s+(\d+)\]/);
         const buildNumber = buildMatch ? ` [Build ${buildMatch[1]}]` : '';
         const experimental = state.experimental ? ` (${state.experimental})` : '';
-        
+
         updatedContent = updatedContent.replace(/\s*\[Build\s+\d+\]/g, '');
         updatedContent = updatedContent.replace(
             /(\[color=white\]\[b\]Version:\[\/b\]\s*)\[i\].*?\[\/i\]/,
@@ -731,6 +724,7 @@ function detectPlatform(filename) {
     if (filename.includes('.Windows.')) return 'windows';
     return 'windows';
 }
+
 // Update display
 function updateDisplay() {
     const grouped = {
@@ -739,22 +733,28 @@ function updateDisplay() {
         Linux: []
     };
 
-    // Process files
     for (const file of files) {
         const platform = detectPlatform(file.name);
         const branch = extractBranch(file.content).replace(/[\[\]]/g, '').trim().toLowerCase() || 'public';
         let content = file.content;
 
-        // Apply updates based on platform and branch
         content = updateFileContent(content, platform, branch);
 
-        // Group content
         if (platform === 'linux') {
-            grouped.Linux.push({ ...file, content });
+            grouped.Linux.push({
+                ...file,
+                content
+            });
         } else if (platform === 'mac') {
-            grouped.Mac.push({ ...file, content });
+            grouped.Mac.push({
+                ...file,
+                content
+            });
         } else {
-            grouped.Windows.push({ ...file, content });
+            grouped.Windows.push({
+                ...file,
+                content
+            });
         }
     }
 
@@ -768,18 +768,18 @@ function updateFileList(grouped) {
     if (!fileList) return;
 
     const fileListHTML = `
-        <div class="file-list-header">
-            <span>Filename</span>
-            <span>Platform</span>
-            <span>Branch</span>
-        </div>
-        ${[
-            ...grouped.Windows.map(createFileListItem),
-            ...grouped.Mac.map(createFileListItem),
-            ...grouped.Linux.map(createFileListItem)
-        ].join('')}
-    `;
-    
+                <div class="file-list-header">
+                    <span>Filename</span>
+                    <span>Platform</span>
+                    <span>Branch</span>
+                </div>
+                ${[
+                    ...grouped.Windows.map(createFileListItem),
+                    ...grouped.Mac.map(createFileListItem),
+                    ...grouped.Linux.map(createFileListItem)
+                ].join('')}
+            `;
+
     fileList.innerHTML = fileListHTML;
 }
 
@@ -787,7 +787,6 @@ function updateFileList(grouped) {
 function createFileListItem(file) {
     const platform = detectPlatform(file.name);
     const hasWin32 = files.some(f => f.name.includes('Win32'));
-    
     let displayPlatform = platform;
     if (platform === 'windows') {
         if (file.name.includes('Win32')) {
@@ -796,9 +795,9 @@ function createFileListItem(file) {
             displayPlatform = 'Win64';
         }
     }
-    
+
     const branch = extractBranch(file.content).replace(/[\[\]]/g, '').trim() || 'Public';
-    
+
     return `
         <div class="file-item">
             <span>${file.name}</span>
@@ -825,11 +824,10 @@ function updateOutputText(grouped) {
 // Create quote block
 function createQuoteBlock(file, platform) {
     const color = platform === 'Windows' ? windowsColor :
-                 platform === 'Mac' ? macColor : linuxColor;
-                 
-    // Check if Win32 exists in any of the files
+        platform === 'Mac' ? macColor : linuxColor;
+
     const hasWin32 = files.some(f => f.name.includes('Win32'));
-    
+
     let label = platform;
     if (platform === 'Windows') {
         if (file.name.includes('Win32')) {
@@ -838,7 +836,7 @@ function createQuoteBlock(file, platform) {
             label = 'Windows 64-bit';
         }
     }
-    
+
     return `[quote][size=150][color=${color}]${label}${extractBranch(file.content)}[/color][/size]\n${file.content}[/quote]`;
 }
 
@@ -878,7 +876,9 @@ function downloadOutput() {
         return;
     }
 
-    const blob = new Blob([output.textContent], { type: 'text/plain' });
+    const blob = new Blob([output.textContent], {
+        type: 'text/plain'
+    });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -893,18 +893,18 @@ function downloadOutput() {
 // Generate filename for download
 function generateFileName() {
     if (files.length === 0) return 'combined.txt';
-    
+
     let baseName = files[0].name;
     baseName = baseName.replace(/\.txt$/, '');
-    
+
     const originalPlatformMatch = baseName.match(/(Win32|Win64|Linux64|Linux|Mac|Windows)/);
     if (originalPlatformMatch) {
         const platforms = new Set(files.map(file => {
             const platform = detectPlatform(file.name);
-            return platform === 'Windows' ? 'Win' : 
-                   (platform === 'Linux' ? 'Linux64' : platform);
+            return platform === 'Windows' ? 'Win' :
+                (platform === 'Linux' ? 'Linux64' : platform);
         }));
-        
+
         const platformString = Array.from(platforms)
             .sort((a, b) => {
                 const order = {
@@ -916,17 +916,17 @@ function generateFileName() {
                 return order[a] - order[b];
             })
             .join('.');
-            
+
         baseName = baseName.replace(originalPlatformMatch[0], platformString);
     }
-    
+
     return baseName + '.txt';
 }
-// Clear all data also clear localStorage
+
+// Clear all data
 function clearAll() {
     files.length = 0;
-    
-    // Reset all control states
+
     Object.keys(controlStates).forEach(platform => {
         Object.keys(controlStates[platform]).forEach(branch => {
             controlStates[platform][branch] = {
@@ -939,10 +939,18 @@ function clearAll() {
         });
     });
 
-    // Clear localStorage
     localStorage.removeItem('controlToggles');
+    localStorage.removeItem('colorPreferences');
 
-    // Reset all toggles and inputs
+    // Reset color pickers to defaults
+    windowsColor = '#3b82f6';
+    macColor = '#FC5232';
+    linuxColor = '#10b981';
+
+    document.getElementById('windowsColorPicker').value = windowsColor;
+    document.getElementById('macColorPicker').value = macColor;
+    document.getElementById('linuxColorPicker').value = linuxColor;
+
     document.querySelectorAll('.date-toggle input, .link-toggle input').forEach(input => {
         input.checked = false;
     });
@@ -955,14 +963,12 @@ function clearAll() {
         input.value = '';
     });
 
-    // Hide all branch-specific controls
     document.querySelectorAll('.branch-specific-controls').forEach(el => {
         if (!el.classList.contains('public-branch-controls')) {
             el.style.display = 'none';
         }
     });
 
-    // Hide Win32 controls
     const win32Controls = document.querySelector('.win32-controls');
     if (win32Controls) {
         win32Controls.style.display = 'none';
@@ -992,12 +998,10 @@ function createSpaceBackground() {
     spaceBackground.id = 'space-background';
     document.body.prepend(spaceBackground);
 
-    // Add reduced nebula effect with lower opacity and fewer gradients
     const nebula = document.createElement('div');
     nebula.className = 'nebula';
     spaceBackground.appendChild(nebula);
 
-    // Reduce number of star clusters
     for (let i = 0; i < 3; i++) {
         const cluster = document.createElement('div');
         cluster.className = 'star-cluster';
@@ -1009,7 +1013,6 @@ function createSpaceBackground() {
         spaceBackground.appendChild(cluster);
     }
 
-    // Reduce number of shooting stars
     const shootingStar = document.createElement('div');
     shootingStar.className = 'shooting-star';
     shootingStar.style.top = `${Math.random() * 100}%`;
@@ -1017,36 +1020,28 @@ function createSpaceBackground() {
     shootingStar.style.animationDelay = `${Math.random() * 10}s`;
     spaceBackground.appendChild(shootingStar);
 
-    // Reduce number of stars and simplify their styling
-    const starCount = 100; // Reduced from 200
+    const starCount = 100;
     for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = `${Math.random() * 100}%`;
         star.style.top = `${Math.random() * 100}%`;
-        const size = Math.random() * 1.5 + 0.5; // Reduced size range
+        const size = Math.random() * 1.5 + 0.5;
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
-        
-        // Simplified animation with longer duration
         star.style.animation = `twinkle ${Math.random() * 3 + 4}s ease-in-out infinite ${Math.random() * 2}s`;
-        
-        // Simplified glow effect
         star.style.boxShadow = `0 0 ${size}px rgba(255, 255, 255, 0.3)`;
-        
         spaceBackground.appendChild(star);
     }
 
-    // Reduce number of planets and simplify their effects
-    const celestialBodies = [
-        { 
-            name: 'sun', 
+    const celestialBodies = [{
+            name: 'sun',
             color: 'radial-gradient(circle at 30% 30%, #fff7b5, #ffd700)',
             size: 60,
             left: '10%',
             top: '20%'
         },
-        { 
+        {
             name: 'earth',
             color: 'linear-gradient(135deg, #4b9cd3, #1a5c8b)',
             size: 25,
@@ -1070,16 +1065,12 @@ function createSpaceBackground() {
         planet.style.background = body.color;
         planet.style.left = body.left;
         planet.style.top = body.top;
-        planet.style.animation = 'float 10s ease-in-out infinite'; // Simplified animation
+        planet.style.animation = 'float 10s ease-in-out infinite';
         planet.style.opacity = '0.7';
-        
-        // Simplified shadow
         planet.style.boxShadow = 'inset -4px -4px 8px rgba(0, 0, 0, 0.5)';
-        
         spaceBackground.appendChild(planet);
     });
 
-    // Optimize scroll performance
     let ticking = false;
     window.addEventListener('scroll', () => {
         if (!ticking) {
@@ -1087,21 +1078,34 @@ function createSpaceBackground() {
                 const scrolled = window.pageYOffset;
                 const stars = document.querySelectorAll('.star');
                 const planets = document.querySelectorAll('.planet');
-                
-                // Use transform3d for hardware acceleration
+
                 stars.forEach((star, index) => {
-                    if (index % 2 === 0) { // Only animate every other star
+                    if (index % 2 === 0) {
                         star.style.transform = `translate3d(0, ${scrolled * 0.1}px, 0)`;
                     }
                 });
-                
+
                 planets.forEach((planet, index) => {
                     planet.style.transform = `translate3d(0, ${scrolled * 0.05}px, 0)`;
                 });
-                
+
                 ticking = false;
             });
             ticking = true;
         }
     });
+}
+
+// Try to load saved colors
+try {
+    const saved = localStorage.getItem('colorPreferences');
+    if (saved) {
+        const colors = JSON.parse(saved);
+        windowsColor = colors.windows || windowsColor;
+        macColor = colors.mac || macColor;
+        linuxColor = colors.linux || linuxColor;
+        console.log('Loaded colors:', colors);
+    }
+} catch (e) {
+    console.error('Error loading saved colors:', e);
 }
