@@ -1,16 +1,10 @@
 // Global variables
 const files = [];
-const savedColors = JSON.parse(localStorage.getItem('colorPreferences')) || {
-    windows: '#3b82f6',
-    mac: '#fc7477',
-    linux: '#10b981'
-};
+let windowsColor = '#3b82f6';
+let macColor = '#FC5232';
+let linuxColor = '#10b981';
 
-let windowsColor = savedColors.windows;
-let macColor = savedColors.mac;
-let linuxColor = savedColors.linux;
-
-// Load saved colors if they exist
+// Try to load saved colors right at startup
 try {
     const saved = localStorage.getItem('colorPreferences');
     if (saved) {
@@ -18,10 +12,12 @@ try {
         windowsColor = colors.windows || windowsColor;
         macColor = colors.mac || macColor;
         linuxColor = colors.linux || linuxColor;
+        console.log('Loaded colors:', colors); // Debug log
     }
 } catch (e) {
     console.error('Error loading saved colors:', e);
 }
+
 
 // Enhanced control states
 const controlStates = {
@@ -65,31 +61,27 @@ document.addEventListener('DOMContentLoaded', function() {
     createSpaceBackground();
 });
 
-// Initialize color pickers
+// Simplified color picker initialization
 function initializeColorPickers() {
     // Set initial values
-    const windowsPicker = document.getElementById('windowsColorPicker');
-    const macPicker = document.getElementById('macColorPicker');
-    const linuxPicker = document.getElementById('linuxColorPicker');
-
-    if (windowsPicker) windowsPicker.value = windowsColor;
-    if (macPicker) macPicker.value = macColor;
-    if (linuxPicker) linuxPicker.value = linuxColor;
+    document.getElementById('windowsColorPicker').value = windowsColor;
+    document.getElementById('macColorPicker').value = macColor;
+    document.getElementById('linuxColorPicker').value = linuxColor;
 
     // Add event listeners
-    windowsPicker?.addEventListener('change', function(e) {
+    document.getElementById('windowsColorPicker').addEventListener('change', function(e) {
         windowsColor = e.target.value;
         saveColors();
         updateDisplay();
     });
 
-    macPicker?.addEventListener('change', function(e) {
+    document.getElementById('macColorPicker').addEventListener('change', function(e) {
         macColor = e.target.value;
         saveColors();
         updateDisplay();
     });
 
-    linuxPicker?.addEventListener('change', function(e) {
+    document.getElementById('linuxColorPicker').addEventListener('change', function(e) {
         linuxColor = e.target.value;
         saveColors();
         updateDisplay();
@@ -100,18 +92,6 @@ function saveControlStates() {
     localStorage.setItem('controlToggles', JSON.stringify(controlStates));
 }
 
-function saveColors() {
-    try {
-        const colors = {
-            windows: windowsColor,
-            mac: macColor,
-            linux: linuxColor
-        };
-        localStorage.setItem('colorPreferences', JSON.stringify(colors));
-    } catch (e) {
-        console.error('Error saving colors:', e);
-    }
-}
 
 // Save color preferences
 function saveColorPreferences() {
