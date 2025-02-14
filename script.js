@@ -2,7 +2,7 @@
 const files = [];
 const savedColors = JSON.parse(localStorage.getItem('colorPreferences')) || {
     windows: '#3b82f6',
-    mac: '#8b5cf6',
+    mac: '#fc7477',
     linux: '#10b981'
 };
 
@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize color pickers
 function initializeColorPickers() {
+    // Set initial values from saved preferences
     document.getElementById('windowsColorPicker').value = windowsColor;
     document.getElementById('macColorPicker').value = macColor;
     document.getElementById('linuxColorPicker').value = linuxColor;
@@ -62,8 +63,21 @@ function initializeColorPickers() {
         const picker = document.getElementById(`${platform}ColorPicker`);
         if (picker) {
             picker.addEventListener('input', function(e) {
+                // Update the color variable
                 window[`${platform}Color`] = e.target.value;
+                // Save to localStorage
                 saveColorPreferences();
+                // Update the display
+                updateDisplay();
+            });
+
+            // Add change event listener to handle when color picker closes
+            picker.addEventListener('change', function(e) {
+                // Update the color variable
+                window[`${platform}Color`] = e.target.value;
+                // Save to localStorage
+                saveColorPreferences();
+                // Update the display
                 updateDisplay();
             });
         }
@@ -76,11 +90,12 @@ function saveControlStates() {
 
 // Save color preferences
 function saveColorPreferences() {
-    localStorage.setItem('colorPreferences', JSON.stringify({
+    const preferences = {
         windows: windowsColor,
         mac: macColor,
         linux: linuxColor
-    }));
+    };
+    localStorage.setItem('colorPreferences', JSON.stringify(preferences));
 }
 // Initialize controls for each platform and branch
 function initializeControls() {
