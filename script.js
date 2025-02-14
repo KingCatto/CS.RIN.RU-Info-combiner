@@ -10,6 +10,19 @@ let windowsColor = savedColors.windows;
 let macColor = savedColors.mac;
 let linuxColor = savedColors.linux;
 
+// Load saved colors if they exist
+try {
+    const saved = localStorage.getItem('colorPreferences');
+    if (saved) {
+        const colors = JSON.parse(saved);
+        windowsColor = colors.windows || windowsColor;
+        macColor = colors.mac || macColor;
+        linuxColor = colors.linux || linuxColor;
+    }
+} catch (e) {
+    console.error('Error loading saved colors:', e);
+}
+
 // Enhanced control states
 const controlStates = {
     windows: { 
@@ -54,38 +67,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize color pickers
 function initializeColorPickers() {
-    // Set initial values from saved preferences
-    document.getElementById('windowsColorPicker').value = windowsColor;
-    document.getElementById('macColorPicker').value = macColor;
-    document.getElementById('linuxColorPicker').value = linuxColor;
+    // Set initial values
+    const windowsPicker = document.getElementById('windowsColorPicker');
+    const macPicker = document.getElementById('macColorPicker');
+    const linuxPicker = document.getElementById('linuxColorPicker');
 
-    ['windows', 'mac', 'linux'].forEach(platform => {
-        const picker = document.getElementById(`${platform}ColorPicker`);
-        if (picker) {
-            picker.addEventListener('input', function(e) {
-                // Update the color variable
-                window[`${platform}Color`] = e.target.value;
-                // Save to localStorage
-                saveColorPreferences();
-                // Update the display
-                updateDisplay();
-            });
+    if (windowsPicker) windowsPicker.value = windowsColor;
+    if (macPicker) macPicker.value = macColor;
+    if (linuxPicker) linuxPicker.value = linuxColor;
 
-            // Add change event listener to handle when color picker closes
-            picker.addEventListener('change', function(e) {
-                // Update the color variable
-                window[`${platform}Color`] = e.target.value;
-                // Save to localStorage
-                saveColorPreferences();
-                // Update the display
-                updateDisplay();
-            });
-        }
+    // Add event listeners
+    windowsPicker?.addEventListener('change', function(e) {
+        windowsColor = e.target.value;
+        saveColors();
+        updateDisplay();
+    });
+
+    macPicker?.addEventListener('change', function(e) {
+        macColor = e.target.value;
+        saveColors();
+        updateDisplay();
+    });
+
+    linuxPicker?.addEventListener('change', function(e) {
+        linuxColor = e.target.value;
+        saveColors();
+        updateDisplay();
     });
 }
 
 function saveControlStates() {
     localStorage.setItem('controlToggles', JSON.stringify(controlStates));
+}
+
+function saveColors() {
+    try {
+        const colors = {
+            windows: windowsColor,
+            mac: macColor,
+            linux: linuxColor
+        };
+        localStorage.setItem('colorPreferences', JSON.stringify(colors));
+    } catch (e) {
+        console.error('Error saving colors:', e);
+    }
 }
 
 // Save color preferences
